@@ -1,5 +1,7 @@
 using Castle;
-using System;
+using Enemy;
+using System.Collections.Generic;
+
 using UnityEngine;
 
 
@@ -13,9 +15,24 @@ namespace Play
         [Header("CastleManagerをアタッチ")]
         [SerializeField] private CastleManager castleManager;
 
+        [Header("EnemyManagerをアタッチ")]
+        [SerializeField] private EnemyManager enemyManager;
+
         void Awake()
         {
             castleManager.Initialize(this);
+
+            enemyManager.SetTargetCandidates(
+                new List<IDamageable>()
+                {
+                    castleManager
+                }
+            );
+        }
+
+        void Update()
+        {
+            enemyManager.OnUpdate();
         }
 
         /// <summary>
