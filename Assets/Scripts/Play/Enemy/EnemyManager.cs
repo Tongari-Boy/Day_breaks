@@ -19,6 +19,7 @@ namespace Enemy
         /// </summary>
         [Header("CastleManagerをアタッチ")]
         [SerializeField] private CastleManager castleManager;
+        [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
 
         public void Initialize()
         {
@@ -27,7 +28,8 @@ namespace Enemy
                 enemy.SetTargetCandidates(
                     new List<IDamageable>()
                     {
-                        castleManager
+                        castleManager,
+                        decoyFortressManager
                     }
                 );
             }
