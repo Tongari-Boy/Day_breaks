@@ -7,10 +7,5 @@ namespace Castle
     /// </summary>
     public class CastleUI : MonoBehaviour
     {
-        void Start()
-        {
-        
-        }
-
     }
 }

@@ -7,10 +7,5 @@ namespace DecoyFortress
     /// </summary>
     public class DecoyFortressUI : MonoBehaviour
     {
-
-        void Start()
-        {
-
-        }
     }
 }

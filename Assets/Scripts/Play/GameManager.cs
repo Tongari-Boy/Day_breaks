@@ -1,7 +1,5 @@
 using Castle;
 using Enemy;
-using System.Collections.Generic;
-
 using UnityEngine;
 
 
@@ -22,12 +20,7 @@ namespace Play
         {
             castleManager.Initialize(this);
 
-            enemyManager.SetTargetCandidates(
-                new List<IDamageable>()
-                {
-                    castleManager
-                }
-            );
+            enemyManager.Initialize();
         }
 
         void Update()

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Enemyからのダメージを受けることができるオブジェクトのインターフェース
 /// Castle,DecoyFortess,Playerなどが実装する想定
