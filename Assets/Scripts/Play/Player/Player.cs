@@ -17,14 +17,34 @@ namespace Player
 
         void Start()
         {
+            // デバッグ用
+            Initialize();
+        }
+
+        void Update()
+        {
+            // デバッグ用
+            OnUpdate();
+        }
+
+        public void Initialize()
+        {
             InputActionMap playerActions = InputSystem.actions.FindActionMap("Player");
 
             moveAction = playerActions.FindAction("Move");
         }
 
-        void Update()
+        public void OnUpdate()
         {
-            Vector2 movement =  Time.deltaTime * speedFactor * moveAction.ReadValue<Vector2>();
+            MovePlayer();
+        }
+
+        /// <summary>
+        /// WASD入力によるプレイヤーの移動
+        /// </summary>
+        private void MovePlayer()
+        {
+            Vector2 movement = Time.deltaTime * speedFactor * moveAction.ReadValue<Vector2>();
 
             transform.Translate(movement.x, movement.y, 0F);
         }
