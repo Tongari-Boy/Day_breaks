@@ -59,6 +59,11 @@ namespace Enemy
 
         private IDamageable currentTarget;
 
+        [Header("再探索の間隔(秒)")]
+        [SerializeField] private float retargetInterval = 1f;
+
+        private float retargetTimer;
+
         private float attackTimer;
 
         public void OnUpdate()
@@ -96,6 +101,15 @@ namespace Enemy
             {
                 FindNearestTarget();
                 if (currentTarget == null) return;  // ターゲットが全くない場合
+            }else
+            {
+                // 一定時間でより近い有効なターゲットがいないか再探索
+                retargetTimer += Time.deltaTime;
+                if (retargetTimer >= retargetInterval)
+                {
+                    retargetTimer = 0f;
+                    FindNearestTarget();
+                }
             }
 
             // ターゲットの方向へ移動
@@ -130,6 +144,9 @@ namespace Enemy
             {
                 // すでに破壊されているものはスキップ
                 if (candidate == null || candidate.transform == null) continue;
+
+                // 無効化されている対象はスキップ(有効化前の罠砦など)
+                if (candidate is IEnable enable && !enable.GetEnable()) continue;
 
                 float distance = Vector3.Distance(currentPosition, candidate.transform.position);
                 if (distance < shortestDistance)

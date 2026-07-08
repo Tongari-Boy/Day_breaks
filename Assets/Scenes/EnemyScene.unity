@@ -287,10 +287,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyMovement
   enemyHP: 100
-  enemySpeed: 5
+  enemySpeed: 0
   enemyDamage: 10
   enemyAttackRange: 1.5
   enemyCoolDown: 2
+  retargetInterval: 1
 --- !u!4 &297367314
 Transform:
   m_ObjectHideFlags: 0
@@ -337,10 +338,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyMovement
   enemyHP: 100
-  enemySpeed: 5
+  enemySpeed: 0
   enemyDamage: 10
   enemyAttackRange: 1.5
   enemyCoolDown: 2
+  retargetInterval: 1
 --- !u!4 &426717513
 Transform:
   m_ObjectHideFlags: 0
@@ -526,7 +528,7 @@ Transform:
   m_GameObject: {fileID: 891052786}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 5, y: 2, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -591,10 +593,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyMovement
   enemyHP: 100
-  enemySpeed: 5
+  enemySpeed: 1
   enemyDamage: 10
-  enemyAttackRange: 1.5
+  enemyAttackRange: 1
   enemyCoolDown: 2
+  retargetInterval: 1
 --- !u!1 &1021947775
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,6 +643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c4be8005db24b341a5f8689d172edd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DecoyFortress.DecoyFortressManager
+  FortressEnabled: 0
 --- !u!1 &1401615120
 GameObject:
   m_ObjectHideFlags: 0

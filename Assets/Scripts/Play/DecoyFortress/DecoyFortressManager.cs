@@ -5,7 +5,7 @@ namespace DecoyFortress
     /// <summary>
     ///  罠砦を管理するクラス
     /// </summary>
-    public class DecoyFortressManager : MonoBehaviour, IDamageable
+    public class DecoyFortressManager : MonoBehaviour, IDamageable, IEnable
     {
 
         /// <summary>
@@ -17,6 +17,14 @@ namespace DecoyFortress
         /// 罠砦の最大HP
         /// </summary>
         private int FortressMaxHP = 50;
+
+        /// <summary>
+        /// 罠砦が有効化どうか
+        /// 
+        /// 無効の場合は敵の攻撃対象にならず、
+        /// プレイヤー一定時間が近づくと有効化される。
+        /// </summary>
+        [SerializeField] private bool FortressEnabled = false;
 
         /// <summary>
         /// 罠砦の初期化処理
@@ -46,6 +54,17 @@ namespace DecoyFortress
                 fortressHP -= damageAmount;
                 Debug.Log("現在の罠砦のHP:" + fortressHP);
             }
+        }
+        
+        /// <summary>
+        /// 罠砦の有効化状隊を取得する
+        /// 
+        /// 敵の探索の際に用いる
+        /// </summary>
+        /// <returns>罠砦の有効化状隊</returns>
+        public bool GetEnable()
+        {
+            return FortressEnabled;
         }
     }
 }

@@ -14,5 +14,13 @@ public interface IDamageable
     /// </summary>
     /// <param name="damageAmount">受けたダメージ量</param>
     void OnDamaged(int damageAmount);
-    
+}
+
+/// <summary>
+/// 有効/無効状隊を持つオブジェクトのインタフェース
+/// DecoyFortressManagerが実装するする想定
+/// </summary>
+public interface IEnable
+{
+    bool GetEnable();
 }
