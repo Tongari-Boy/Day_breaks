@@ -1,3 +1,4 @@
+using Physics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,13 +24,13 @@ namespace Player
         /// プレイヤーの射撃後のクールダウン（秒）
         /// </summary>
         [Header("プレイヤーの射撃後のクールダウン（秒）")]
-        [SerializeField] private float shootCooldown = 3F;
+        [SerializeField] private float shootCooldown = 0.2F;
 
         /// <summary>
         /// プレイヤーの弾（デバッグ用）
         /// </summary>
         [Header("プレイヤーの弾（デバッグ用）")]
-        [SerializeField] private GameObject debugBullet;
+        [SerializeField] private GameObject playerBullet;
 
         /// <summary>
         /// プレイヤーの弾がスポーンする距離（デバッグ用）
@@ -54,19 +55,24 @@ namespace Player
         private InputAction sprintAction;
 
         /// <summary>
+        /// プレイヤーの建築入力
+        /// </summary>
+        private InputAction buildAction;
+
+        /// <summary>
         /// プレイヤーの射撃入力
         /// </summary>
         private InputAction shootAction;
 
         /// <summary>
-        /// プレイヤーのマウスカーソル
+        /// プレイヤーのマウスカーソル入力
         /// </summary>
         private InputAction cursorAction;
 
         /// <summary>
         /// プレイヤーの射撃後の残っているクールダウン。この値が0以下のときに発射可能となる。
         /// </summary>
-        private float remainingCooldown = 0F;
+        private float remainingShootCooldown = 0F;
 
         public void Initialize()
         {
@@ -74,6 +80,7 @@ namespace Player
 
             moveAction = playerActions.FindAction("Move");
             sprintAction = playerActions.FindAction("Sprint");
+            buildAction = playerActions.FindAction("Build");
             shootAction = playerActions.FindAction("Shoot");
             cursorAction = playerActions.FindAction("Cursor");
         }
@@ -81,6 +88,7 @@ namespace Player
         public void OnUpdate()
         {
             Move();
+            Build();
             Shoot();
         }
 
@@ -107,14 +115,21 @@ namespace Player
         }
 
         /// <summary>
+        /// プレイヤーの建築
+        /// </summary>
+        private void Build()
+        {
+        }
+
+        /// <summary>
         /// プレイヤーの射撃
         /// </summary>
         private void Shoot()
         {
-            // クールダウンが残っていれば減らす。0以下になるまで発射はできない。
-            if (remainingCooldown > 0F)
+            // クールダウンが残っていれば減らす。0以下になるまで射撃はできない。
+            if (remainingShootCooldown > 0F)
             {
-                remainingCooldown -= Time.deltaTime;
+                remainingShootCooldown -= Time.deltaTime;
 
                 return;
             }
@@ -124,28 +139,24 @@ namespace Player
                 return;
 
             // マウスカーソルの座標を取得
-            Vector3 playerPos = transform.position;
             Vector2 cursorPos = cursorAction.ReadValue<Vector2>();
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(cursorPos.x, cursorPos.y, 0F));
+            Vector3 playerPos = transform.position;
+            Vector3 aimPos = Camera.main.ScreenToWorldPoint(new Vector3(cursorPos.x, cursorPos.y, 0F));
 
             // プレイヤーからマウスカーソルへの方向を取得
-            Vector3 aimDirection = Vector3.Normalize(new Vector3(worldPos.x, worldPos.y, 0F) - new Vector3(playerPos.x, playerPos.y, 0F));
+            Vector3 aimDir = Vector3.Normalize(new Vector3(aimPos.x, aimPos.y, 0F) - new Vector3(playerPos.x, playerPos.y, 0F));
 
             // 弾のスポーン（デバッグ用）
-            if (debugBullet)
+            if (playerBullet)
             {
-                GameObject gameObject = Instantiate(debugBullet, playerPos + aimDirection * bulletSpawnDistance, Quaternion.identity);
-                Rigidbody2D rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
+                GameObject gameObject = Instantiate(playerBullet, playerPos + aimDir * bulletSpawnDistance, Quaternion.identity);
 
-                // 弾に速度を付与
-                if (rigidbody2D)
-                {
-                    rigidbody2D.linearVelocity = aimDirection * bulletSpeed;
-                }
+                // 物理空間に登録
+                PhysicsEngine.INSTANCE.Register(gameObject, aimDir * bulletSpeed);
             }
 
             // クールダウンを設定
-            remainingCooldown = shootCooldown;
+            remainingShootCooldown = shootCooldown;
         }
 
         void Start()
