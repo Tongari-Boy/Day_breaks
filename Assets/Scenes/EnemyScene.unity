@@ -302,7 +302,8 @@ MonoBehaviour:
   enemyHP: 100
   enemySpeed: 0
   enemyDamage: 10
-  enemyAttackRange: 1.5
+  enemyAttackRange: 0
+  enemyChasingRange: 1
   enemyCoolDown: 2
   selfRadius: 0.5
   retargetInterval: 1
@@ -354,7 +355,8 @@ MonoBehaviour:
   enemyHP: 100
   enemySpeed: 0
   enemyDamage: 10
-  enemyAttackRange: 1.5
+  enemyAttackRange: 0
+  enemyChasingRange: 1
   enemyCoolDown: 2
   selfRadius: 0.5
   retargetInterval: 1
@@ -623,7 +625,8 @@ MonoBehaviour:
   enemyHP: 100
   enemySpeed: 1
   enemyDamage: 10
-  enemyAttackRange: 0.1
+  enemyAttackRange: 0.2
+  enemyChasingRange: 0.1
   enemyCoolDown: 2
   selfRadius: 0.5
   retargetInterval: 1
@@ -858,7 +861,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.14874879}
+  m_Offset: {x: 0.009184122, y: 0.14415634}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.28866667}
@@ -868,7 +871,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 0.8748309}
+  m_Size: {x: 1.1102076, y: 0.90238357}
   m_EdgeRadius: 0
 --- !u!1 &1651453732
 GameObject:

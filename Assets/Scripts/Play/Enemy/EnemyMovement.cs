@@ -41,6 +41,9 @@ namespace Enemy
         [Header("敵の攻撃範囲")]
         [SerializeField] private float enemyAttackRange = 1.5f;
 
+        [Header("敵の追跡から止まるまでの範囲(攻撃範囲以下にしないと正常に動作しません)")]
+        [SerializeField] private float enemyChasingRange = 1f;
+
         /// <summary>
         /// 敵の攻撃頻度(クールダウン)
         /// </summary>
@@ -130,12 +133,11 @@ namespace Enemy
                 }
             }
 
-            // 移動前に、表面までの距離を先に計算しておく
+            // 移動前に、表面までの距離が攻撃範囲より大きいかを判定
             float distance = GetSurfaceDistance(currentTarget);
 
             if (distance < enemyAttackRange)
             {
-                // すでに攻撃範囲内なら移動せず攻撃状態へ
                 currentState = EnemyState.Attacking;
                 attackTimer = enemyCoolDown;
                 return;
@@ -145,20 +147,10 @@ namespace Enemy
             Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
 
             // 移動してもいい最大量(行きすぎない量)
-            float moveAmount = Mathf.Min(enemySpeed * Time.deltaTime, distance - enemyAttackRange);
+            float moveAmount = Mathf.Min(enemySpeed * Time.deltaTime, distance - enemyChasingRange);
             moveAmount = Mathf.Max(moveAmount, 0f); //　負値を防ぐ
 
             transform.position += moveAmount * direction;
-
-            //transform.position += direction * enemySpeed * Time.deltaTime;
-
-            //// 距離判定
-            //float distance = GetSurfaceDistance(currentTarget);
-            //if (distance < enemyAttackRange)
-            //{
-            //    currentState = EnemyState.Attacking;
-            //    attackTimer = enemyCoolDown; // 攻撃のクールダウンタイマーをリセット
-            //}
         }
 
         /// <summary>
@@ -214,8 +206,7 @@ namespace Enemy
                 attackTimer = 0f; // クールダウンタイマーをリセット
 
                 // 攻撃直後に距離判定を行い、離れていた場合、追跡状隊に
-                float distance = Vector3.Distance(transform.position, currentTarget.transform.position);
-                if (distance > enemyAttackRange)
+                if (!IsInAttackRange(currentTarget))
                 {
                     currentState = EnemyState.Chasing;
                 }
@@ -231,10 +222,7 @@ namespace Enemy
             // 攻撃の瞬間にもう一度距離と存在を確認(空振りを防止するため)
             if (currentTarget != null && currentTarget.transform != null)
             {
-                // 敵から攻撃対象までの距離
-                float distance = Vector3.Distance(transform.position, currentTarget.transform.position);
-
-                if (distance < enemyAttackRange)
+                if (currentTarget != null && currentTarget.transform != null && IsInAttackRange(currentTarget))
                 {
                     // 目標のHPを減らす
                     currentTarget.OnDamaged(enemyDamage);
@@ -273,6 +261,16 @@ namespace Enemy
 
             // コリダーがない場合は中心点間の距離にフォールバック
             return Vector2.Distance(transform.position,target.transform.position);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target">追跡/攻撃対象</param>
+        /// <returns>追跡/攻撃対象の表面までの距離</returns>
+        private bool IsInAttackRange(IDamageable target)
+        {
+            return GetSurfaceDistance(target) < enemyAttackRange;
         }
     }
 }
