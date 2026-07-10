@@ -15,10 +15,15 @@ namespace Play
 
         [Header("EnemyManagerをアタッチ")]
         [SerializeField] private EnemyManager enemyManager;
+        [Header("DecoyFortressManagerをアタッチ")]
+        [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
 
         void Awake()
         {
+            // HPが初期化される前の状態を拾ってしまう可能性があるため、
+            // enemyManagerよりcastleManager、decoyFortressManagerの初期化を先に行う
             castleManager.Initialize(this);
+            decoyFortressManager.Initialize();
 
             enemyManager.Initialize();
         }

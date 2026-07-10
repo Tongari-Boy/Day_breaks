@@ -19,21 +19,19 @@ namespace Enemy
         /// </summary>
         [Header("CastleManagerをアタッチ")]
         [SerializeField] private CastleManager castleManager;
+        [Header("DecoyFortressManagerをアタッチ")]
         [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
 
         public void Initialize()
         {
+            //  城+罠砦をまとめて候補リストに
+            var targets = new List<IDamageable> { castleManager };
+            targets.AddRange(decoyFortressManager.GetAllAsDamageable());
+
             foreach(var enemy in enemies)
             {
                 enemy.Initialize();
-
-                enemy.SetTargetCandidates(
-                    new List<IDamageable>()
-                    {
-                        castleManager,
-                        decoyFortressManager
-                    }
-                );
+                enemy.SetTargetCandidates(targets);
             }
         }
 

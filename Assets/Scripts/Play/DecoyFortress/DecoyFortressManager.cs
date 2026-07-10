@@ -1,71 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DecoyFortress
 {
     /// <summary>
-    ///  罠砦を管理するクラス
+    ///  罠砦全体を管理するクラス
     /// </summary>
-    public class DecoyFortressManager : MonoBehaviour, IDamageable, IEnable
+    public class DecoyFortressManager : MonoBehaviour
     {
+        [Header("DecoyFortressSettingのついた罠砦をすべてアタッチ")]
+        [SerializeField]private List<DecoyFortressSetting> fortresses;
 
-        /// <summary>
-        /// 罠砦のHP
-        /// </summary>
-        private int fortressHP = 50;
-
-        /// <summary>
-        /// 罠砦の最大HP
-        /// </summary>
-        private int FortressMaxHP = 50;
-
-        /// <summary>
-        /// 罠砦が有効化どうか
-        /// 
-        /// 無効の場合は敵の攻撃対象にならず、
-        /// プレイヤー一定時間が近づくと有効化される。
-        /// </summary>
-        [SerializeField] private bool fortressEnabled = false;
-
-        /// <summary>
-        /// 罠砦の初期化処理
-        /// 
-        /// HPを最大値に上書きする
-        /// </summary>
         public void Initialize()
         {
-            fortressHP = FortressMaxHP;
+            foreach (var fortress in fortresses)
+            {
+                fortress.Initialize();
+            }
         }
 
         /// <summary>
-        /// 罠砦がダメージを受けたときの処理
-        /// (Enemyクラスなどから呼ばれる)
-        /// 
+        /// 敵の攻撃対象候補として渡すためのリストを取得
         /// </summary>
-        /// <param name="damageAmount">受けたダメージ量</param>
-        public void OnDamaged(int damageAmount)
+        public List<IDamageable> GetAllAsDamageable()
         {
-            if(fortressHP - damageAmount <= 0)
-            {
-                fortressHP = 0;
-                fortressEnabled = false;
-                Debug.Log("罠砦が壊れた");
-            }
-            else
-            {
-                fortressHP -= damageAmount;
-                Debug.Log("現在の罠砦のHP:" + fortressHP);
-            }
-        }
-        
-        /// <summary>
-        /// 罠砦の有効化状隊を取得する
-        /// 
-        /// 敵の探索の際に用いる
-        /// </summary>
-        /// <returns>罠砦の有効化状隊</returns>
-        public bool GetEnable()
-        {
-            return fortressEnabled;
+            return fortresses.ConvertAll(f => (IDamageable)f);
         }
     }
 }
