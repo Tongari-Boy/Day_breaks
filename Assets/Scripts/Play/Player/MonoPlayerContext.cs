@@ -25,7 +25,7 @@ namespace Player
         [Header("プレイヤーの弾を射撃するGameObject（シューター）")]
         [SerializeField] private GameObject playerBulletShooter;
 
-        [Header("プレイヤーの弾がスポーンする発射点からの距離（シューターの位置を基準とする）")]
+        [Header("プレイヤーの弾がスポーンする位置までの距離（シューターの位置を基準とする）")]
         [SerializeField] private float bulletSpawnDistance = 1F;
 
         [Header("プレイヤーの弾の速度係数")]

@@ -87,12 +87,16 @@ namespace Player
                 // Collider2Dを取得
                 playerCollider = playerObject.GetComponent<Collider2D>();
 
-                // IPlayerContextを実装したMonoBehaviourを取得
-                MonoBehaviour monoBehaviour = playerObject.GetComponent<MonoBehaviour>();
+                // IPlayerContextを実装したMonoBehaviourを探す
+                MonoBehaviour[] monoBehaviours = playerObject.GetComponents<MonoBehaviour>();
 
-                if (monoBehaviour is IPlayerContext iPlayerContext)
+                foreach (MonoBehaviour monoBehaviour in monoBehaviours)
                 {
-                    playerContext = iPlayerContext;
+                    if (monoBehaviour.enabled && monoBehaviour is IPlayerContext iPlayerContext)
+                    {
+                        playerContext = iPlayerContext;
+                        break;
+                    }
                 }
             }
         }
@@ -182,7 +186,7 @@ namespace Player
             if (!shooterObject)
                 shooterObject = playerObject;
 
-            // マウスカーソルの座標を取得
+            // マウスカーソルのワールド座標を取得
             Vector2 cursorPos = cursorAction.ReadValue<Vector2>();
             Vector3 shooterPos = shooterObject.transform.position;
             Vector3 aimPos = Camera.main ? Camera.main.ScreenToWorldPoint(new Vector3(cursorPos.x, cursorPos.y, 0F)) : shooterPos;

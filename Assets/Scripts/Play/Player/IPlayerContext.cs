@@ -38,7 +38,7 @@ namespace Player
         GameObject PlayerBulletShooter { get; set; }
 
         /// <summary>
-        /// プレイヤーの弾がスポーンする発射点からの距離（シューターの位置を基準とする）
+        /// プレイヤーの弾がスポーンする位置までの距離（シューターの位置を基準とする）
         /// </summary>
         float BulletSpawnDistance { get; set; }
 
