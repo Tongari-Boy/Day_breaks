@@ -10,6 +10,9 @@ namespace Castle
     {
         private GameManager gameManager;
 
+        [Header("城のUI")]
+        [SerializeField] private CastleUI castleUI;
+
         /// <summary>
         /// 城のHP
         /// 
@@ -28,7 +31,13 @@ namespace Castle
         {
             this.gameManager = gameManager;
 
-            castleHP = CastleMaxHP;
+            castleHP = CastleMaxHP; 
+
+            // UIの初期化
+            if(castleUI != null)
+            {
+                castleUI.SetUp(CastleMaxHP, castleHP);
+            }
         }
 
         /// <summary>
@@ -42,12 +51,14 @@ namespace Castle
             if (castleHP - damageAmount <= 0)
             {
                 castleHP = 0;
+                if (castleUI != null) castleUI.UpdateHP(castleHP);
                 Debug.Log("城が壊れた");
                 gameManager.GameOver();
             }
             else
             {
                 castleHP -= damageAmount;
+                if (castleUI != null) castleUI.UpdateHP(castleHP);
                 Debug.Log("現在の城のHP:" + castleHP);
             }
         }
