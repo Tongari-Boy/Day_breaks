@@ -1,4 +1,5 @@
 using Play;
+using Player;
 using UnityEngine;
 
 namespace Castle
