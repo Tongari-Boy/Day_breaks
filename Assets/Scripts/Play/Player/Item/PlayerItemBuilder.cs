@@ -13,6 +13,7 @@ namespace Player.Item
         public PlayerItemBuilder(string id)
         {
             this.playerItem = new PlayerItem(id);
+            this.Sprite($"Images/Items/{id}");
         }
 
         /// <summary>
@@ -21,6 +22,26 @@ namespace Player.Item
         public PlayerItemBuilder Name(string name)
         {
             this.playerItem.Name = name;
+
+            return this;
+        }
+
+        /// <summary>
+        /// アイテムのスプライトを設定
+        /// </summary>
+        public PlayerItemBuilder Sprite(string path)
+        {
+            this.playerItem.Sprite = Resources.Load<Sprite>(path) ?? this.playerItem.Sprite;
+
+            return this;
+        }
+
+        /// <summary>
+        /// アイテムのGameObjectを設定
+        /// </summary>
+        public PlayerItemBuilder GameObject(GameObject gameObject)
+        {
+            this.playerItem.GameObject = gameObject;
 
             return this;
         }
@@ -57,6 +78,10 @@ namespace Player.Item
 
             private string name;
 
+            private Sprite sprite;
+
+            private GameObject gameObject;
+
             private Action<IPlayerContext> action;
 
             public PlayerItem(string id)
@@ -75,6 +100,18 @@ namespace Player.Item
             {
                 get { return this.name; }
                 set { this.name = value; }
+            }
+
+            public Sprite Sprite
+            {
+                get { return this.sprite }
+                set { this.sprite = value; }
+            }
+
+            public GameObject GameObject
+            {
+                get { return this.gameObject; }
+                set { this.gameObject = value; }
             }
 
             public Action<IPlayerContext> Action

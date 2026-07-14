@@ -1,4 +1,6 @@
-﻿namespace Player.Item
+﻿using UnityEngine;
+
+namespace Player.Item
 {
     /// <summary>
     /// プレイヤーが使用するアイテムを定義する
@@ -14,6 +16,16 @@
         /// アイテムの名前
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// アイテムのスプライト
+        /// </summary>
+        Sprite Sprite { get;  }
+
+        /// <summary>
+        /// アイテムのGameObject
+        /// </summary>
+        GameObject GameObject { get; }
 
         /// <summary>
         /// アイテムを使用したときに実行されるアクション
