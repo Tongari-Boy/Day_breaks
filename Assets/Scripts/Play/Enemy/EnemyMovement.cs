@@ -257,7 +257,7 @@ namespace Enemy
                 // ターゲットのコリダーの表面までの最短距離
                 Vector2 closePoint = hitBoxMarker.HitCollider.ClosestPoint(transform.position);
                 return Vector2.Distance(transform.position, closePoint) - selfRadius;
-            }
+           }
 
             // コリダーがない場合は中心点間の距離にフォールバック
             return Vector2.Distance(transform.position,target.transform.position);

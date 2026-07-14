@@ -1,5 +1,6 @@
 using Castle;
 using Enemy;
+using Player;
 using UnityEngine;
 
 
@@ -17,20 +18,27 @@ namespace Play
         [SerializeField] private EnemyManager enemyManager;
         [Header("DecoyFortressManagerをアタッチ")]
         [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
+        [Header("Timer")]
+        [SerializeField] private GameTimer gameTimer;
 
         void Awake()
         {
+            PlayerManager.INSTANCE.Initialize();
             // HPが初期化される前の状態を拾ってしまう可能性があるため、
             // enemyManagerよりcastleManager、decoyFortressManagerの初期化を先に行う
             castleManager.Initialize(this);
             decoyFortressManager.Initialize();
 
             enemyManager.Initialize();
+
+            gameTimer.Initialize();
         }
 
         void Update()
         {
+            PlayerManager.INSTANCE.OnUpdate();
             enemyManager.OnUpdate();
+            gameTimer.OnUpdate();
         }
 
         /// <summary>
