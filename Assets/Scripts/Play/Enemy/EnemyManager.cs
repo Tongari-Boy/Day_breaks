@@ -21,12 +21,15 @@ namespace Enemy
         [SerializeField] private CastleManager castleManager;
         [Header("DecoyFortressManagerをアタッチ")]
         [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
+        [Header("Playerをアタッチ")]
+        [SerializeField] private Player.MonoPlayerContext player ;
 
         public void Initialize()
         {
             //  城+罠砦をまとめて候補リストに
             var targets = new List<IDamageable> { castleManager };
             targets.AddRange(decoyFortressManager.GetAllAsDamageable());
+            // targets.AddRange(player); MonoPlayerContextにIDamageableを実装したとでコメントアウト消す
 
             foreach(var enemy in enemies)
             {
