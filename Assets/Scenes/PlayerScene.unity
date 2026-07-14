@@ -266,8 +266,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1384109222}
   - component: {fileID: 1384109221}
-  - component: {fileID: 1384109219}
-  - component: {fileID: 1384109220}
+  - component: {fileID: 1384109223}
+  - component: {fileID: 1384109224}
   m_Layer: 0
   m_Name: Debug Player
   m_TagString: Untagged
@@ -275,43 +275,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1384109219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1384109218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c9441e2e6396494eb4b77417a691477, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
---- !u!114 &1384109220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1384109218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ce65f6b8678ffb45b2858b1c1174765, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player.MonoPlayerContext
-  health: 1024
-  maxHealth: 65536
-  movementSpeed: 1
-  sprintSpeed: 3
-  playerBullet: {fileID: 1842711167310674695, guid: 15192bbff1433f140a0ad0bc92105ae8, type: 3}
-  playerBulletShooter: {fileID: 0}
-  bulletSpawnDistance: 1
-  bulletSpeed: 1
-  maxShootingCooldown: 0
-  playerItemSlots:
-  - id: debug_health_display
-    count: 1
-  bindingPlayerItemSlot: 0
 --- !u!212 &1384109221
 SpriteRenderer:
   serializedVersion: 2
@@ -386,6 +349,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1384109223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384109218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9441e2e6396494eb4b77417a691477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DebugPlayer
+--- !u!114 &1384109224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384109218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ce65f6b8678ffb45b2858b1c1174765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.MonoPlayerContext
+  health: 0
+  maxHealth: 0
+  movementSpeed: 1
+  sprintSpeed: 3
+  playerBullet: {fileID: 1842711167310674695, guid: 15192bbff1433f140a0ad0bc92105ae8, type: 3}
+  playerBulletShooter: {fileID: 0}
+  bulletSpawnDistance: 1
+  bulletSpeed: 1
+  shootingCooldown: 0
+  maxShootingCooldown: 0
+  playerItemSlots: []
+  bindingPlayerItemSlot: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
