@@ -89,7 +89,6 @@ namespace Enemy
 
         public void OnUpdate()
         {
-            OnDamagedByPlayer(10);
             switch (currentState)
             {
                 case EnemyState.Chasing:

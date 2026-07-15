@@ -149,12 +149,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemySpawner
   spawnDataList:
-  - spawnTime: 0
-    spawnPosition: {x: 0, y: 0}
-    enemyPrefab: {fileID: 0}
-  - spawnTime: 0
-    spawnPosition: {x: 0, y: 0}
-    enemyPrefab: {fileID: 0}
+  - spawnTime: 5
+    spawnPosition: {x: -4, y: -1}
+    enemyPrefab: {fileID: 2132349929361684160, guid: 246fe5ef43dde2543a0179bde402b330, type: 3}
+  - spawnTime: 10
+    spawnPosition: {x: 2, y: 2}
+    enemyPrefab: {fileID: 2132349929361684160, guid: 246fe5ef43dde2543a0179bde402b330, type: 3}
   enemyManager: {fileID: 1986237418}
 --- !u!4 &73155760
 Transform:
@@ -1515,6 +1515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Play.GameManager
   castleManager: {fileID: 891052787}
   enemyManager: {fileID: 1986237418}
+  enemySpawner: {fileID: 73155759}
   decoyFortressManager: {fileID: 242431268}
   gameTimer: {fileID: 706542632}
 --- !u!1 &1477371712
@@ -2250,8 +2251,8 @@ SceneRoots:
   - {fileID: 1651453734}
   - {fileID: 1401615121}
   - {fileID: 242431269}
-  - {fileID: 73155760}
   - {fileID: 1986237417}
+  - {fileID: 73155760}
   - {fileID: 301076039}
   - {fileID: 905959019}
   - {fileID: 891052788}
