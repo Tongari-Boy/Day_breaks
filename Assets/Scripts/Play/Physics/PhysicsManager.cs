@@ -43,7 +43,7 @@ namespace Physics
 
         /// <summary>
         /// PhysicsManagerの更新
-        /// </summary>
+        /// </summary>d
         public void OnUpdate()
         {
             this.Collide();

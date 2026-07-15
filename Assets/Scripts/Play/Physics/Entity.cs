@@ -15,7 +15,7 @@ namespace Physics
 
         private Vector2 scale;
 
-        private float friction = 0F;
+        private float friction = 1F;
 
         public Entity(Shape shape) : this(shape, new(0F, 0F), new(0F, 0F), new(1F, 1F)) { }
 

@@ -32,7 +32,7 @@ namespace Enemy
             //  城+罠砦をまとめて候補リストに
             targets = new List<IDamageable> { castleManager };
             targets.AddRange(decoyFortressManager.GetAllAsDamageable());
-            // targets.AddRange(player); MonoPlayerContextにIDamageableを実装したとでコメントアウト消す
+            // targets.AddRange {player};
 
             foreach(var enemy in enemies)
             {
