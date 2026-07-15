@@ -1,17 +1,16 @@
-using Player;
+ï»¿using Player;
 using Player.Item;
 using UnityEngine;
 
 /// <summary>
-/// PlayerManager‚ÌƒfƒoƒbƒO—p
+/// PlayerManagerã®ãƒ‡ãƒãƒƒã‚°ç”¨
 /// </summary>
 public class DebugPlayer : MonoBehaviour
 {
     void Start()
     {
-        PlayerItemRegistry.INSTANCE.Initialize();
         PlayerManager.INSTANCE.Initialize();
-        PlayerManager.INSTANCE.SetPlayer(gameObject);
+        PlayerManager.INSTANCE.SetPlayer(this.gameObject);
     }
 
     void Update()
