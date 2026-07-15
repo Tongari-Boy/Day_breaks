@@ -20,8 +20,8 @@ namespace Physics
 
         public void Start()
         {
-            // このGameObjectとEntityを紐づける
-            PhysicsManager.INSTANCE.Register(this.gameObject, this.entity);
+            // このEntityBehaviourとEntityを紐づける
+            PhysicsManager.INSTANCE.Register(this, this.entity);
         }
 
         public void Update()
@@ -32,8 +32,8 @@ namespace Physics
 
         public void OnDestroy()
         {
-            // このGameObjectとEntityの紐づけを解除
-            PhysicsManager.INSTANCE.Remove(this.gameObject);
+            // このEntityBehaviourとEntityの紐づけを解除
+            PhysicsManager.INSTANCE.Remove(this);
         }
     }
 }

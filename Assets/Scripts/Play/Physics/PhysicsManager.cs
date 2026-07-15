@@ -14,24 +14,24 @@ namespace Physics
     {
         public static readonly PhysicsManager INSTANCE = new();
 
-        private readonly Dictionary<GameObject, Entity> entities = new();
+        private readonly Dictionary<EntityBehaviour, Entity> entities = new();
 
         private PhysicsManager() { }
 
         /// <summary>
         /// GameObjectを物理空間に追加
         /// </summary>
-        public void Register(GameObject gameObject, Entity entity)
+        public void Register(EntityBehaviour entityBehaviour, Entity entity)
         {
-            this.entities.Add(gameObject, entity);
+            this.entities.Add(entityBehaviour, entity);
         }
 
         /// <summary>
         /// GameObjectを物理空間から削除
         /// </summary>
-        public void Remove(GameObject gameObject)
+        public void Remove(EntityBehaviour entityBehaviour)
         {
-            this.entities.Remove(gameObject);
+            this.entities.Remove(entityBehaviour);
         }
 
         /// <summary>

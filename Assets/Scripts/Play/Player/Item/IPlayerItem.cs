@@ -1,4 +1,6 @@
-﻿namespace Player.Item
+﻿using UnityEngine;
+
+namespace Player.Item
 {
     /// <summary>
     /// プレイヤーが使用するアイテムを定義する

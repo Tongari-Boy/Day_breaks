@@ -8,7 +8,7 @@ namespace Player
     /// <summary>
     /// IPlayerContext、IDamageableを実装
     /// </summary>
-    public class PlayerBehaviour : EntityBehaviour, IPlayerContext, IDamageable
+    public class MonoPlayerContext : EntityBehaviour, IPlayerContext, IDamageable
     {
         [Header("プレイヤーの体力")]
         [SerializeField] private float health = 0F;

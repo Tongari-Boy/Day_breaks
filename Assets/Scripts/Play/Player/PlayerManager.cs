@@ -90,7 +90,7 @@ namespace Player
 
                     if (monoBehaviour && monoBehaviour.enabled)
                     {
-                        if (monoBehaviour is PlayerBehaviour playerBehaviour)
+                        if (monoBehaviour is MonoPlayerContext playerBehaviour)
                         {
                             this.playerEntity = playerBehaviour.Entity;
                             this.playerContext = playerBehaviour;
