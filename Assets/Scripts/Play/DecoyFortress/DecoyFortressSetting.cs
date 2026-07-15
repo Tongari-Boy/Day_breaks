@@ -111,6 +111,19 @@ namespace DecoyFortress
                 }
             }
         }
+        
+        /// <summary>
+        /// 罠砦の建築/復活処理
+        /// 
+        ///     アイテムがあるか、罠砦に触れているかの判定は
+        ///     プレイヤ側で行う
+        /// </summary>
+        public void Build()
+        {
+            fortressHP = FortressMaxHP;
+            SetEnable(true);
+        }
+
 
         public void SetEnable(bool enable)
         {
