@@ -1,5 +1,6 @@
-using UnityEngine;
+using Player.Item;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -88,6 +89,7 @@ namespace Enemy
 
         public void OnUpdate()
         {
+            OnDamagedByPlayer(10);
             switch (currentState)
             {
                 case EnemyState.Chasing:
@@ -271,6 +273,25 @@ namespace Enemy
         private bool IsInAttackRange(IDamageable target)
         {
             return GetSurfaceDistance(target) < enemyAttackRange;
+        }
+
+        /// <summary>
+        /// プレイヤ、罠砦から攻撃を受けたときの処理
+        /// </summary>
+        /// <param name="amount"></param>
+        public void OnDamagedByPlayer(int amount)
+        {
+            if(enemyHP - amount > 0)
+            {
+                enemyHP -= amount;
+            }
+            else
+            {
+                enemyHP = 0;
+                // アイテムの生成
+                ItemDropSpawner.INSTANCE.Drop("example", transform.position);
+                Destroy(gameObject);
+            }
         }
     }
 }
