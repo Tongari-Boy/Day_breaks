@@ -30,7 +30,7 @@ namespace Enemy
         public void Initialize()
         {
             //  城+罠砦をまとめて候補リストに
-            var targets = new List<IDamageable> { castleManager };
+            targets = new List<IDamageable> { castleManager };
             targets.AddRange(decoyFortressManager.GetAllAsDamageable());
             // targets.AddRange(player); MonoPlayerContextにIDamageableを実装したとでコメントアウト消す
 
@@ -59,7 +59,7 @@ namespace Enemy
         public void OnUpdate()
         {
             // 破棄済みの敵をリストから取り除く(後ろから走査して安全に削除)
-            for(int i = enemies.Count -1 ; i >= 0; i--)
+            for(int i = enemies.Count -1; i >= 0; i--)
             {
                 if (enemies[i] == null)
                 {
