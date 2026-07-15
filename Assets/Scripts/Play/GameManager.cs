@@ -16,6 +16,9 @@ namespace Play
 
         [Header("EnemyManagerをアタッチ")]
         [SerializeField] private EnemyManager enemyManager;
+        [Header("EnemySpawnをアタッチ")]
+        [SerializeField] private EnemySpawner enemySpawner;
+
         [Header("DecoyFortressManagerをアタッチ")]
         [SerializeField] private DecoyFortress.DecoyFortressManager decoyFortressManager;
         [Header("Timer")]
@@ -30,6 +33,7 @@ namespace Play
             decoyFortressManager.Initialize();
 
             enemyManager.Initialize();
+            enemySpawner.Initialize();
 
             gameTimer.Initialize();
         }
@@ -38,6 +42,7 @@ namespace Play
         {
             PlayerManager.INSTANCE.OnUpdate();
             enemyManager.OnUpdate();
+            enemySpawner.OnUpdate();
             gameTimer.OnUpdate();
         }
 
@@ -50,6 +55,5 @@ namespace Play
         {
             Debug.Log("城が破壊されたので、ゲームオーバー");
         }
-
     }
 }

@@ -1,3 +1,4 @@
+using Physics;
 using Player.Item;
 using System.Collections.Generic;
 using UnityEngine;
@@ -89,7 +90,6 @@ namespace Enemy
 
         public void OnUpdate()
         {
-            OnDamagedByPlayer(10);
             switch (currentState)
             {
                 case EnemyState.Chasing:
@@ -152,7 +152,7 @@ namespace Enemy
             float moveAmount = Mathf.Min(enemySpeed * Time.deltaTime, distance - enemyChasingRange);
             moveAmount = Mathf.Max(moveAmount, 0f); //　負値を防ぐ
 
-            transform.position += moveAmount * direction;
+            this.transform.position += moveAmount * direction;
         }
 
         /// <summary>
