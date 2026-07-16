@@ -24,36 +24,42 @@ namespace Player.Item
         /// <param name="collision"></param>
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var playerContext = collision.GetComponent<IPlayerContext>();
-            // 衝突したものがプレイヤでなかったら無視
-            if (playerContext == null) return;
+            Debug.Log($"衝突: {collision.gameObject.name}, タグ: {collision.gameObject.tag}");
+            if (!collision.gameObject.CompareTag("Player")) return;
 
-            AddToInventory(playerContext);
-            Destroy(gameObject);
+            var playerBehaviour = collision.gameObject.GetComponent<Player.PlayerBehaviour>();
+            Debug.Log($"PlayerBehaviour取得結果: {(playerBehaviour != null ? "成功" : "失敗")}");
+
+            if (playerBehaviour == null)
+            {
+                Debug.Log("PlayerBehaviorが見つかりません");
+                return;
+            }
+
+            if(AddToInventory(playerBehaviour))
+            {
+                Destroy(gameObject);
+            }
+            
         }
 
         /// <summary>
         /// プレイヤのインベリに触れたアイテムを入れる
         /// </summary>
-        /// <param name="playerContext"></param>
-        private void AddToInventory(IPlayerContext playerContext)
+        private bool AddToInventory(Player.PlayerBehaviour playerBehaviour)
         {
-            var existingSlot = playerContext.PlayerItemSlots.Find(slot => slot.Id == itemId);
+            bool added = playerBehaviour.AddItem(itemId,amount);
 
-            if(existingSlot != null)
+            if(added)
             {
-                existingSlot.Count += amount;
+                Debug.Log($"{itemId}を{amount}個取得");
             }
             else
             {
-                playerContext.PlayerItemSlots.Add(new PlayerItemState
-                {
-                    Id = itemId,
-                    Count = amount
-                });
+                Debug.Log("アイテム取得:失敗");
             }
 
-            Debug.Log($"{itemId}を{amount}個取得");
+            return added;
         }
     }
 }
