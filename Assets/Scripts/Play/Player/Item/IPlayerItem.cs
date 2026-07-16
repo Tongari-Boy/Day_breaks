@@ -18,8 +18,14 @@ namespace Player.Item
         string Name { get; }
 
         /// <summary>
-        /// アイテムを使用したときに実行されるアクション
+        /// アイテムの画像
         /// </summary>
-        void Use(IPlayerContext playerContext);
+        Sprite Sprite { get; }
+
+        /// <summary>
+        /// アイテムを使用したときのアクション
+        /// </summary>
+        /// <param name="playerObject">プレイヤー</param>
+        void Use(GameObject playerObject);
     }
 }

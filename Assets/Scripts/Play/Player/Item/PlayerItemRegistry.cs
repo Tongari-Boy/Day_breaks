@@ -4,59 +4,28 @@ using UnityEngine;
 namespace Player.Item
 {
     /// <summary>
-    /// アイテム（IPlayerItem）を登録できるレジストリ
+    /// アイテムが登録されるレジストリ
     /// </summary>
     public class PlayerItemRegistry
     {
         /// <summary>
-        /// PlayerItemRegistryクラスのインスタンス
+        /// このクラスのインスタンス
         /// </summary>
         public static readonly PlayerItemRegistry INSTANCE = new();
 
-        /// <summary>
-        /// アイテムのレジストリ
-        /// </summary>
-        private readonly Dictionary<string, IPlayerItem> playerItems = new();
+        public readonly Dictionary<string, IPlayerItem> playerItems;
 
-        private PlayerItemRegistry() { }
-
-        /// <summary>
-        /// アイテムを定義する
-        /// </summary>
-        public PlayerItemBuilder Create(string id)
+        private PlayerItemRegistry()
         {
-            return new PlayerItemBuilder(id);
+            this.playerItems = new();
         }
 
         /// <summary>
         /// 新しいアイテムを登録する
         /// </summary>
-        public IPlayerItem Register(IPlayerItem playerItem)
+        public void Register(IPlayerItem playerItem)
         {
-            IPlayerItem oldPlayerItem = this.playerItems.ContainsKey(playerItem.Id) ? this.playerItems[playerItem.Id] : null;
-            
-            this.playerItems[playerItem.Id] = playerItem;
-
-            return oldPlayerItem;
-        }
-
-        /// <summary>
-        /// 登録されたアイテムを使用する
-        /// </summary>
-        public bool Use(string id, IPlayerContext playerContext)
-        {
-            if (this.playerItems.ContainsKey(id))
-            {
-                this.playerItems[id].Use(playerContext);
-
-                return true;
-            }
-            else
-            {
-                Debug.LogWarning($"アイテム（id: {id}）は登録されていません！");
-            }
-
-                return false;
+            this.playerItems.Add(playerItem.Id, playerItem);
         }
     }
 }
