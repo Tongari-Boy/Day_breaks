@@ -49,27 +49,27 @@ namespace Player.Bullet
 
         public void OnCollisionEnter2D(Collision2D collision2D)
         {
-            switch (collision2D.gameObject.tag)
-            {
-                case "Enemy":
-                    this.Attack(collision2D.gameObject);
-                    break;
-            }
+            this.Attack(collision2D);
         }
 
         /// <summary>
-        /// EnemyMovementにダメージを与える
+        /// 衝突したものにダメージを与える
         /// </summary>
-        private void Attack(GameObject gameObject)
+        private void Attack(Collision2D collision2D)
         {
-            if (gameObject == null)
-                return;
+            // HitboxMarkerとの衝突を検知
+            HitboxMarker hitboxMarker = collision2D.gameObject.GetComponent<HitboxMarker>();
 
-            EnemyMovement enemyMovement = gameObject.GetComponent<EnemyMovement>();
-
-            if (enemyMovement != null && enemyMovement.enabled)
+            if (hitboxMarker != null && hitboxMarker.enabled)
             {
-                enemyMovement.OnDamagedByPlayer(this.attackDamage);
+                EnemyMovement enemyMovement = collision2D.gameObject.GetComponentInParent<EnemyMovement>();
+
+                // HitboxMarkerがEnemyMovementの子であるかチェック
+                if (enemyMovement != null && enemyMovement.enabled && enemyMovement.CompareTag("Enemy"))
+                {
+                    // EnemyMovementにダメージを与える
+                    enemyMovement.OnDamagedByPlayer(this.attackDamage);
+                }
 
                 // 弾を消す
                 UnityEngine.Object.Destroy(this.gameObject);

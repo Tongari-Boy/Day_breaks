@@ -31,5 +31,13 @@ namespace Player.Item
             this.id = id;
             this.count = count;
         }
+
+        /// <summary>
+        /// アイテムを使用する
+        /// </summary>
+        public bool Use(GameObject playerObject)
+        {
+            return PlayerItemRegistry.INSTANCE.Use(this, playerObject); ;
+        }
     }
 }

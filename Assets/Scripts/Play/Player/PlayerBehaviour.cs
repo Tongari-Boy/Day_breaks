@@ -1,4 +1,6 @@
 ﻿using Player.Bullet;
+using Player.Item;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,7 +10,7 @@ namespace Player
     public class PlayerBehaviour : MonoBehaviour, IDamageable
     {
         [Header("カメラ追従モード")]
-        [SerializeField] private bool cameraFollowingMode = true;
+        [SerializeField] private bool cameraFollowingMode = false;
 
         [Header("プレイヤーの体力")]
         [SerializeField] private int health = 100;
@@ -21,9 +23,6 @@ namespace Player
 
         [Header("プレイヤーの速度（ダッシュ時）")]
         [SerializeField] private float sprintSpeed = 3.0F;
-
-        [Header("使用後のクールダウン")]
-        [SerializeField] private float usingCooldown = 1.0F;
 
         [Header("シューター")]
         [SerializeField] private GameObject shooterObject;
@@ -45,6 +44,15 @@ namespace Player
 
         [Header("連射モード")]
         [SerializeField] private bool holdingShootingMode = true;
+
+        [Header("プレイヤーの所持するアイテムスロット")]
+        [SerializeField] private List<PlayerItemState> playerItemSlots = new();
+
+        [Header("プレイヤーの選択中のアイテムスロット")]
+        [SerializeField] private int bindingSlot = 0;
+
+        [Header("アイテム使用後のクールダウン")]
+        [SerializeField] private float usingCooldown = 1.0F;
 
         private int remainingHealth;
         private float remainingUsingCooldown;
