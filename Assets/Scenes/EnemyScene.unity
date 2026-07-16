@@ -929,6 +929,7 @@ MonoBehaviour:
   MaxTime: 180
   isTimeRunning: 0
   timerText: {fileID: 267516172}
+  gameManager: {fileID: 1401615122}
 --- !u!4 &706542633
 Transform:
   m_ObjectHideFlags: 0

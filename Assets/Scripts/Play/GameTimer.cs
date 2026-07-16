@@ -16,6 +16,9 @@ public class GameTimer : MonoBehaviour
     [Header("UI用のテキスト")]
     [SerializeField] private TextMeshProUGUI timerText;
 
+    [Header("GameManagerをアタッチ")]
+    [SerializeField] private Play.GameManager gameManager;
+
 
     public void Initialize()
     {
@@ -80,5 +83,6 @@ public class GameTimer : MonoBehaviour
     private void OnTimerUp()
     {
         timerText.text = "00:00";
+        gameManager.GameClear();
     }
 }
