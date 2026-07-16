@@ -1,4 +1,7 @@
 ﻿using Player.Bullet;
+using Player.Item;
+using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,7 +11,7 @@ namespace Player
     public class PlayerBehaviour : MonoBehaviour, IDamageable
     {
         [Header("カメラ追従モード")]
-        [SerializeField] private bool cameraFollowingMode = true;
+        [SerializeField] private bool cameraFollowingMode = false;
 
         [Header("プレイヤーの体力")]
         [SerializeField] private int health = 100;
@@ -22,9 +25,6 @@ namespace Player
         [Header("プレイヤーの速度（ダッシュ時）")]
         [SerializeField] private float sprintSpeed = 3.0F;
 
-        [Header("使用後のクールダウン")]
-        [SerializeField] private float usingCooldown = 1.0F;
-
         [Header("シューター")]
         [SerializeField] private GameObject shooterObject;
 
@@ -35,16 +35,25 @@ namespace Player
         [SerializeField] private float bulletSpeed = 5.0F;
 
         [Header("弾の寿命（秒）")]
-        [SerializeField] private float bulletDuration = 10.0F;
+        [SerializeField] private float bulletDuration = 8.0F;
 
         [Header("弾のスポーン位置までの距離")]
         [SerializeField] private float bulletSpawnDistance = 1.0F;
 
-        [Header("射撃後のクールダウン")]
+        [Header("射撃後のクールダウン（秒）")]
         [SerializeField] private float shootingCooldown = 1.0F;
 
         [Header("連射モード")]
         [SerializeField] private bool holdingShootingMode = true;
+
+        [Header("プレイヤーのアイテムスロット")]
+        [SerializeField] private PlayerItemState[] playerItemSlots = new PlayerItemState[0];
+
+        [Header("プレイヤーのアイテムスロットのサイズ")]
+        [SerializeField] private int playerItemSlotSize = 3;
+
+        [Header("アイテム使用後のクールダウン（秒）")]
+        [SerializeField] private float usingCooldown = 1.0F;
 
         private int remainingHealth;
         private float remainingUsingCooldown;
@@ -56,7 +65,102 @@ namespace Player
         private InputAction shoot;
         private InputAction cursor;
 
-        private Rigidbody2D rigidbody2D;
+        private new Rigidbody2D rigidbody2D;
+
+        /// <summary>
+        /// <para>アイテムスロットに空きがあれば、アイテムを追加する</para>
+        /// <para>同じアイテムを持っていれば、countだけ個数を増やす</para>
+        /// <para>アイテムを追加できた場合はtrueを返す</para>
+        /// </summary>
+        public bool AddItem(string id, int count = 1)
+        {
+            this.Resize();
+
+            if (id == null)
+                return false;
+
+            PlayerItemState playerItemState = new(id, count);
+            PlayerItemState slotItemState;
+
+            int length = this.playerItemSlots.Length;
+
+            // 同じアイテムを探す
+            for (int i = 0; i < length; ++i)
+            {
+                slotItemState = this.playerItemSlots[i];
+
+                if (slotItemState.Equals(playerItemState))
+                {
+                    slotItemState.Count += count;
+
+                    // アイテムの個数が0になった場合は空にする
+                    if (slotItemState.Count <= 0)
+                    {
+                        this.playerItemSlots[i] = PlayerItemState.EMPTY;
+                    }
+
+                    return true;
+                }
+            }
+
+            // 空のアイテムスロットを探す
+            for (int i = 0; i < length; ++i)
+            {
+                slotItemState = this.playerItemSlots[i];
+
+                if (slotItemState.Equals(PlayerItemState.EMPTY))
+                {
+                    this.playerItemSlots[i] = playerItemState;
+
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// アイテムスロットのリサイズ
+        /// </summary>
+        private void Resize()
+        {
+            if (this.playerItemSlots.Length != this.playerItemSlotSize)
+            {
+                // 新しいサイズのアイテムスロットを生成
+                PlayerItemState[] newPlayerItemSlots = new PlayerItemState[Math.Max(0, this.playerItemSlotSize)];
+                int oldLength = this.playerItemSlots.Length;
+                int newLength = newPlayerItemSlots.Length;
+
+                // 要素をコピー
+                for (int i = 0; i < newLength; ++i)
+                {
+                    if (i < oldLength)
+                    {
+                        newPlayerItemSlots[i] = this.playerItemSlots[i];
+                    }
+                    else
+                    {
+                        newPlayerItemSlots[i] = PlayerItemState.EMPTY;
+                    }
+                }
+
+                this.playerItemSlots = newPlayerItemSlots;
+            }
+            else
+            {
+                int length = this.playerItemSlots.Length;
+
+                // nullをPlayerItemState.EMPTYに置き換える
+                for (int i = 0; i < length; ++i)
+                {
+                    if (this.playerItemSlots[i] == null)
+                    {
+                        this.playerItemSlots[i] = PlayerItemState.EMPTY;
+                    }
+                }
+            }
+        }
 
         public void Start()
         {
@@ -192,20 +296,18 @@ namespace Player
             Vector2 aimPos = Camera.main ? Camera.main.ScreenToWorldPoint(new Vector3(cursorPos.x, cursorPos.y, 0F)) : shooterPos;
             Vector2 aimDir = Vector2.Normalize(new Vector2(aimPos.x, aimPos.y) - new Vector2(shooterPos.x, shooterPos.y));
 
+            // 弾を射撃
             GameObject bulletObject = UnityEngine.Object.Instantiate(this.bulletObject, shooterPos + aimDir * this.bulletSpawnDistance, Quaternion.identity);
-            Rigidbody2D rigidbody2D = bulletObject.GetComponent<Rigidbody2D>();
-            BulletBehaviour bulletBehaviour = bulletObject.GetComponent<BulletBehaviour>();
+            Rigidbody2D rigidbody2D = bulletObject.GetOrAddComponent<Rigidbody2D>();
+            BulletBehaviour bulletBehaviour = bulletObject.GetOrAddComponent<BulletBehaviour>();
 
-            if (rigidbody2D != null)
-            {
-                rigidbody2D.linearVelocity = aimDir * this.bulletSpeed;
-            }
-
-            if (bulletBehaviour != null && bulletBehaviour.enabled)
-            {
-                bulletBehaviour.AttackDamage = this.attackDamage;
-                bulletBehaviour.Duration = this.bulletDuration;
-            }
+            rigidbody2D.mass = 1.0F;
+            rigidbody2D.linearVelocity = aimDir * this.bulletSpeed;
+            rigidbody2D.linearDamping = 0.0F;
+            rigidbody2D.angularDamping = 0.0F;
+            rigidbody2D.gravityScale = 0.0F;
+            bulletBehaviour.AttackDamage = this.attackDamage;
+            bulletBehaviour.Duration = this.bulletDuration;
 
             // クールダウンを設定
             this.remainingShootingCooldown = this.shootingCooldown;
@@ -219,5 +321,4 @@ namespace Player
             this.remainingHealth = Mathf.Clamp(this.remainingHealth - damageAmount, 0, this.health);
         }
     }
-
 }

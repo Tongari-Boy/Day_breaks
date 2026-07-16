@@ -433,6 +433,9 @@ MonoBehaviour:
   bulletSpawnDistance: 1
   shootingCooldown: 0.1
   holdingShootingMode: 1
+  playerItemSlots: []
+  playerItemSlotSize: 5
+  usingCooldown: 1
 --- !u!58 &1384109228
 CircleCollider2D:
   m_ObjectHideFlags: 0

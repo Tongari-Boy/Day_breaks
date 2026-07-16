@@ -15,17 +15,30 @@ namespace Player.Item
         /// <summary>
         /// アイテムの名前
         /// </summary>
-        string Name { get; }
+        string Name
+        {
+            get { return this.Id; }
+        }
 
         /// <summary>
-        /// アイテムの画像
+        /// このアイテムを使用するのに必要な個数
         /// </summary>
-        Sprite Sprite { get; }
+        public int Cost
+        {
+            get { return 1; }
+        }
+
+        /// <summary>
+        /// アイテムを使用できるかどうか
+        /// </summary>
+        bool CanUse(PlayerItemState playerItemState, GameObject playerObject)
+        {
+            return true;
+        }
 
         /// <summary>
         /// アイテムを使用したときのアクション
         /// </summary>
-        /// <param name="playerObject">プレイヤー</param>
-        void Use(GameObject playerObject);
+        void DoUse(PlayerItemState playerItemState, GameObject playerObject);
     }
 }

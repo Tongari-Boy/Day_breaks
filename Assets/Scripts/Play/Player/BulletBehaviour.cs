@@ -9,7 +9,7 @@ namespace Player.Bullet
         [SerializeField] private int attackDamage = 50;
 
         [Header("弾の寿命（秒）")]
-        [SerializeField] private float duration = 10.0F;
+        [SerializeField] private float duration = 8.0F;
 
         public int AttackDamage
         {
@@ -36,7 +36,14 @@ namespace Player.Bullet
 
         public void Update()
         {
-            // 寿命を減らす
+            this.Collapse();
+        }
+
+        /// <summary>
+        /// 寿命を減らす
+        /// </summary>
+        private void Collapse()
+        {
             if (this.duration > 0.0F)
             {
                 this.duration -= Time.deltaTime;
@@ -49,31 +56,41 @@ namespace Player.Bullet
 
         public void OnCollisionEnter2D(Collision2D collision2D)
         {
-            switch (collision2D.gameObject.tag)
+            this.Attack(collision2D.gameObject);
+            this.Collide(collision2D.gameObject);
+        }
+
+        /// <summary>
+        /// 衝突したものにダメージを与える
+        /// </summary>
+        private void Attack(GameObject gameObject)
+        {
+            // HitboxMarkerとの衝突を検知
+            HitboxMarker hitboxMarker = gameObject.GetComponent<HitboxMarker>();
+
+            if (hitboxMarker != null && hitboxMarker.enabled)
             {
-                case "Enemy":
-                    this.Attack(collision2D.gameObject);
-                    break;
+                EnemyMovement enemyMovement = gameObject.GetComponentInParent<EnemyMovement>();
+
+                // HitboxMarkerがEnemyMovementの子であるかチェック
+                if (enemyMovement != null)
+                {
+                    // EnemyMovementにダメージを与える
+                    enemyMovement.OnDamagedByPlayer(this.attackDamage);
+                }
             }
         }
 
         /// <summary>
-        /// EnemyMovementにダメージを与える
+        /// 弾を消す
         /// </summary>
-        private void Attack(GameObject gameObject)
+        private void Collide(GameObject gameObject)
         {
-            if (gameObject == null)
+            // これらはスルー
+            if (gameObject.CompareTag("Player") || gameObject.CompareTag("Bullet"))
                 return;
 
-            EnemyMovement enemyMovement = gameObject.GetComponent<EnemyMovement>();
-
-            if (enemyMovement != null && enemyMovement.enabled)
-            {
-                enemyMovement.OnDamagedByPlayer(this.attackDamage);
-
-                // 弾を消す
-                UnityEngine.Object.Destroy(this.gameObject);
-            }
+            UnityEngine.Object.Destroy(this.gameObject);
         }
     }
 }
