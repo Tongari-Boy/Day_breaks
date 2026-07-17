@@ -2,6 +2,7 @@ using Castle;
 using Enemy;
 using Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Play
@@ -24,6 +25,9 @@ namespace Play
         [Header("Timer")]
         [SerializeField] private GameTimer gameTimer;
 
+        [Header("ゲーム中フラグ")]
+        private bool gaming = false;
+
         void Awake()
         {
             PlayerManager.INSTANCE.Initialize();
@@ -36,14 +40,37 @@ namespace Play
             enemySpawner.Initialize();
 
             gameTimer.Initialize();
+
+            GameStart();
         }
 
         void Update()
         {
-            PlayerManager.INSTANCE.OnUpdate();
-            enemyManager.OnUpdate();
-            enemySpawner.OnUpdate();
-            gameTimer.OnUpdate();
+            if (gaming)
+            {
+                PlayerManager.INSTANCE.OnUpdate();
+                enemyManager.OnUpdate();
+                enemySpawner.OnUpdate();
+                gameTimer.OnUpdate();
+            }
+        }
+
+        /// <summary>
+        /// ゲーム中フラグをオンにする
+        /// これによりUpdateが動き始まる
+        /// </summary>
+        public void GameStart()
+        {
+            gaming = true;
+        }
+
+        /// <summary>
+        /// ゲームクリア処理
+        /// </summary>
+        public void GameClear()
+        {
+            gaming = false;
+            SceneManager.LoadScene("003_Result");
         }
 
         /// <summary>
@@ -54,6 +81,9 @@ namespace Play
         public void GameOver()
         {
             Debug.Log("城が破壊されたので、ゲームオーバー");
+            gaming = false;
+
+            SceneManager.LoadScene("004_GameOver");
         }
     }
 }

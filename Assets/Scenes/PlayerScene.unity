@@ -425,6 +425,7 @@ MonoBehaviour:
   attackDamage: 50
   movementSpeed: 1
   sprintSpeed: 3
+  usingCooldown: 1
   shooterObject: {fileID: 0}
   bulletObject: {fileID: 748792875100894902, guid: 0d37ed35a9917d24fb4feedfd61b0963, type: 3}
   bulletSpeed: 5
