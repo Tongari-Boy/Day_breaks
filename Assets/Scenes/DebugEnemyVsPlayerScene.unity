@@ -726,7 +726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd0f70ed0f19d344be0f71ce37ae289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.Item.ItemDropSpawner
-  itemPickupPrefab: {fileID: 2042647916928207170, guid: de76d991802c9664ebe141130ebf2597, type: 3}
+  playerItemObject: {fileID: 6083902087670025328, guid: de76d991802c9664ebe141130ebf2597, type: 3}
 --- !u!4 &301076039
 Transform:
   m_ObjectHideFlags: 0
@@ -1126,19 +1126,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.data[0].id
-      value: decoy_fortress_regenerator
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.data[1].id
-      value: EMPTY
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.data[0].count
-      value: 300
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.data[1].count
