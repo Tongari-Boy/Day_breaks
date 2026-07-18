@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player.Item
@@ -9,8 +10,8 @@ namespace Player.Item
     {
         public static ItemDropSpawner INSTANCE { get; private set; }
 
-        [Header("ドロップ時に生成するピックアッププレハブ")]
-        [SerializeField] private ItemPickUp itemPickupPrefab;
+        [Header("ドロップ時に生成するアイテム")]
+        [SerializeField] private GameObject playerItemObject;
 
         private void Awake()
         {
@@ -22,10 +23,21 @@ namespace Player.Item
         /// </summary>
         /// <param name="itemId">PlayerItemRegistryに登録済みのアイテムID</param>
         /// <param name="position">ドロップ位置</param>
-        public void Drop(string itemId, Vector3 position)
+        /// <param name="itemCount">アイテムの個数</param>
+        public void Drop(string itemId, Vector3 position, int itemCount = 1)
         {
-            var pickup = Instantiate(itemPickupPrefab, position, Quaternion.identity);
-            pickup.SetUp(itemId);
+            // GameObjectの生成
+            GameObject playerItemObject = Instantiate(this.playerItemObject, position, Quaternion.identity);
+
+            // PlayerItemBehaviourの取得
+            PlayerItemBehaviour playerItemBehaviour = playerItemObject.GetOrAddComponent<PlayerItemBehaviour>();
+
+            // PlayerItemStateを初期化
+            if (playerItemBehaviour != null && playerItemBehaviour.enabled)
+            {
+                playerItemBehaviour.PlayerItemState.Id = itemId;
+                playerItemBehaviour.PlayerItemState.Count = itemCount;
+            }
         }
     }
 }

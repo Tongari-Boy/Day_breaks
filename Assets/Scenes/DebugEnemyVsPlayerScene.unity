@@ -1142,7 +1142,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6390551689946605179, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: playerItemSlots.Array.data[1].count
-      value: 300
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9002160305156552501, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: m_Name

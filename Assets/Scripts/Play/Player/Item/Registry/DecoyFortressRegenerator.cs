@@ -20,13 +20,13 @@ namespace Player.Item
 
         public bool CanUse(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)
         {
-            return playerBehaviour.TriggeringDecoyFortress.Count > 0;
+            return playerBehaviour.InteractingDecoyFortresses.Count > 0;
         }
 
         public bool DoUse(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)
         {
             // PlayerBehaviourが検知しているDecoyFortressを取得
-            foreach (DecoyFortressSetting decoyFortressSetting in playerBehaviour.TriggeringDecoyFortress)
+            foreach (DecoyFortressSetting decoyFortressSetting in playerBehaviour.InteractingDecoyFortresses)
             {
                 if (decoyFortressSetting != null && decoyFortressSetting.enabled && !decoyFortressSetting.GetEnable())
                 {

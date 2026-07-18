@@ -21,8 +21,7 @@ namespace Player.Item
 
         private PlayerItemRegistry()
         {
-            // アイテムを登録する
-            this.Register(new DecoyFortressRegenerator());
+            this.Initialize();
         }
 
         /// <summary>
@@ -32,6 +31,13 @@ namespace Player.Item
         {
             if (playerItem == null)
                 return false;
+
+            if (playerItem.Id == null || playerItem.Id == "")
+            {
+                Debug.Log($"IDがnullもしくは空文字であるため、アイテムを登録できません…");
+
+                return false;
+            }
 
             try
             {
@@ -60,6 +66,20 @@ namespace Player.Item
         /// </summary>
         public bool Use(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)
         {
+            if (playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id)
+            {
+                Debug.LogWarning($"PlayerItemStateは空であるため使用できません…");
+
+                return false;
+            }
+
+            if (playerBehaviour == null)
+            {
+                Debug.LogError($"PlayerBehaviourがnullであるためアイテム（ID: {playerItemState.Id}）を使用できません…");
+
+                return false;
+            }
+
             if (this.playerItems.ContainsKey(playerItemState.Id))
             {
                 IPlayerItem playerItem = this.playerItems[playerItemState.Id]?.playerItem;
@@ -72,8 +92,6 @@ namespace Player.Item
 
                     return true;
                 }
-
-                Debug.LogError($"アイテム（ID: {playerItemState.Id}）がnullです！");
             }
             else
             {
@@ -81,6 +99,15 @@ namespace Player.Item
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// レジストリにアイテムを登録する
+        /// </summary>
+        public void Initialize()
+        {
+            // アイテムを登録する
+            this.Register(new DecoyFortressRegenerator());
         }
 
         /// <summary>

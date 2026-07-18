@@ -43,7 +43,7 @@ namespace Player
         [SerializeField] private float bulletDuration = 8.0F;
 
         [Header("弾のスポーン位置までの距離")]
-        [SerializeField] private float bulletSpawnDistance = 1.0F;
+        [SerializeField] private float bulletSpawnDistance = 0.25F;
 
         [Header("射撃後のクールダウン（秒）")]
         [SerializeField] private float shootingCooldown = 1.0F;
@@ -54,12 +54,15 @@ namespace Player
         [Header("プレイヤーのアイテムスロット")]
         [SerializeField] private PlayerItemState[] playerItemSlots = new PlayerItemState[0];
 
+        [Header("プレイヤーのマウスホイールの感度")]
+        [SerializeField] private float mouseWheelSensitivity = 0.25F;
+
         [Header("アイテム使用後のクールダウン（秒）")]
         [SerializeField] private float usingCooldown = 1.0F;
 
         private int remainingHealth;
-        private float remainingUsingCooldown;
         private float remainingShootingCooldown;
+        private float remainingUsingCooldown;
         private float selectingSlotPos;
 
         private InputAction move;
@@ -71,14 +74,89 @@ namespace Player
 
         private new Rigidbody2D rigidbody2D;
 
-        private readonly Dictionary<string, DecoyFortressSetting> triggeringDecoyFortress = new();
+        private readonly Dictionary<string, EnemyMovement> interactingEnemies = new();
+        private readonly Dictionary<string, PlayerItemBehaviour> interactingPlayerItems = new();
+        private readonly Dictionary<string, DecoyFortressSetting> interactingDecoyFortresses = new();
+        private readonly Dictionary<string, CastleManager> interactingCastles = new();
 
         /// <summary>
-        /// プレイヤーが接触しているDecoyFortress
+        /// プレイヤーの体力（残り）
         /// </summary>
-        public Dictionary<string, DecoyFortressSetting>.ValueCollection TriggeringDecoyFortress
+        public int RemainingHealth
         {
-            get { return this.triggeringDecoyFortress.Values; }
+            get { return this.remainingHealth; }
+        }
+
+        /// <summary>
+        /// プレイヤーの体力（最大）
+        /// </summary>
+        public int Health
+        {
+            get { return this.health; }
+        }
+
+        /// <summary>
+        /// 射撃後のクールダウン（残り）
+        /// </summary>
+        public float RemainingShootingCooldown
+        {
+            get { return Mathf.Max(0.0F, this.remainingShootingCooldown); }
+        }
+
+        /// <summary>
+        /// 射撃後のクールダウン（最大）
+        /// </summary>
+        public float ShootingCooldown
+        {
+            get { return Mathf.Max(0.0F, this.shootingCooldown); }
+        }
+
+        /// <summary>
+        /// アイテム使用後のクールダウン（残り）
+        /// </summary>
+        public float RemainingUsingCooldown
+        {
+            get { return Mathf.Max(0.0F, this.remainingUsingCooldown); }
+        }
+
+        /// <summary>
+        /// アイテム使用後のクールダウン（最大）
+        /// </summary>
+        public float UsingCooldown
+        {
+            get { return Mathf.Max(0.0F, this.usingCooldown); }
+        }
+
+        /// <summary>
+        /// プレイヤーが接触しているEnemyMovement
+        /// </summary>
+        public Dictionary<string, EnemyMovement>.ValueCollection InteractingEnemies
+        {
+            get { return this.interactingEnemies.Values; }
+        }
+
+        /// <summary>
+        /// プレイヤーが接触しているPlayerItemBehaviour
+        /// </summary>
+        public Dictionary<string, PlayerItemBehaviour>.ValueCollection InteractingPlayerItems
+        {
+            get { return this.interactingPlayerItems.Values; }
+        }
+
+        /// <summary>
+        /// プレイヤーが接触しているDecoyFortressSetting
+        /// </summary>
+        public Dictionary<string, DecoyFortressSetting>.ValueCollection InteractingDecoyFortresses
+        {
+            get { return this.interactingDecoyFortresses.Values; }
+        }
+
+        /// <summary>
+        /// プレイヤーが接触しているCastleManager
+        /// </summary>
+        public Dictionary<string, CastleManager>.ValueCollection InteractingCastles
+        {
+            get { return this.interactingCastles.Values; }
         }
 
         /// <summary>
@@ -90,9 +168,33 @@ namespace Player
         }
 
         /// <summary>
+        /// <para>PlayerItemState.Countが1以上であれば回収</para>
+        /// <para>回収できた場合はPlayerItemState.Countは0になり、そのスロット番号を返す</para>
+        /// <para>できない場合は何もせず-1を返す</para>
+        /// </summary>
+        public int AddItem(PlayerItemState playerItemState)
+        {
+            int slot = playerItemState != null ? this.AddItem(playerItemState.Id, playerItemState.Count) : -1;
+
+            // 回収できた場合はPlayerItemState.Countを0にする
+            if (slot != -1 && playerItemState.Count > 0)
+            {
+                playerItemState.Count = 0;
+
+                Debug.Log($"プレイヤーがアイテム（ID: {playerItemState.Id}）を{playerItemState.Count}個、回収しました！");
+            }
+            else
+            {
+                Debug.Log($"プレイヤーはアイテム（ID: {playerItemState.Id}）を回収できませんでした…");
+            }
+
+            return slot;
+        }
+
+        /// <summary>
         /// <para>同じアイテムを持っていれば、countだけ個数を増やす</para>
         /// <para>アイテムスロットに空きがあれば、アイテムを追加する</para>
-        /// <para>アイテムを追加できた場合はそのスロット番号を返す</para>
+        /// <para>追加できた場合はそのスロット番号を返す</para>
         /// <para>できなかった場合は-1を返す</para>
         /// </summary>
         public int AddItem(string id, int count = 1)
@@ -119,7 +221,7 @@ namespace Player
             }
 
             // 空のスロットにアイテムを追加
-            if (empty > 0)
+            if (empty >= 0 && id != PlayerItemState.EMPTY.Id)
             {
                 this.playerItemSlots[empty] = new PlayerItemState(id, count);
 
@@ -224,30 +326,143 @@ namespace Player
             this.Follow();
         }
 
-        public void OnTriggerEnter2D(Collider2D collider2d)
+        public void OnCollisionEnter2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, true); }
+
+        public void OnCollisionExit2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, false); }
+
+        public void OnTriggerEnter2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, true); }
+
+        public void OnTriggerExit2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, false); }
+
+        /// <summary>
+        /// GameObjectとの接触
+        /// </summary>
+        private void InteractGameObject(GameObject gameObject, bool triggerState)
         {
-            DecoyFortressSetting decoyFortressSetting = PlayerBehaviour.GetDecoyFortress(collider2d.gameObject);
+            if (this.InteractEnemy(gameObject, triggerState))
+                return;
 
-            if (decoyFortressSetting != null)
-            {
-                // DecoyFortressを追加
-                this.triggeringDecoyFortress[decoyFortressSetting.GetInstanceID().ToString()] = decoyFortressSetting;
+            if (this.InteractPlayerItem(gameObject, triggerState))
+                return;
 
-                Debug.Log($"DecoyFortressがPlayerBehaviourに接触しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
-            }
+            if (this.InteractDecoyFortress(gameObject, triggerState))
+                return;
+
+            if (this.InteractCastle(gameObject, triggerState))
+                return;
         }
 
-        public void OnTriggerExit2D(Collider2D collider2d)
+        /// <summary>
+        /// Enemyとの接触
+        /// </summary>
+        private bool InteractEnemy(GameObject gameObject, bool triggerState)
         {
-            DecoyFortressSetting decoyFortressSetting = PlayerBehaviour.GetDecoyFortress(collider2d.gameObject);
+            EnemyMovement enemyMovement = PlayerBehaviour.GetEnemy(gameObject);
+
+            if (enemyMovement != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingEnemies[enemyMovement.GetInstanceID().ToString()] = enemyMovement;
+
+                    Debug.Log($"EnemyがPlayerBehaviourに接触しました！（ID: {enemyMovement.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingEnemies.Remove(enemyMovement.GetInstanceID().ToString());
+
+                    Debug.Log($"EnemyがPlayerBehaviourを通過しました！（ID: {enemyMovement.GetInstanceID()}）");
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// PlayerItemとの接触
+        /// </summary>
+        private bool InteractPlayerItem(GameObject gameObject, bool triggerState)
+        {
+            PlayerItemBehaviour playerItemBehaviour = PlayerBehaviour.GetPlayerItem(gameObject);
+
+            if (playerItemBehaviour != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingPlayerItems[playerItemBehaviour.GetInstanceID().ToString()] = playerItemBehaviour;
+
+                    Debug.Log($"PlayerItemがPlayerBehaviourに接触しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingPlayerItems.Remove(playerItemBehaviour.GetInstanceID().ToString());
+
+                    Debug.Log($"PlayerItemがPlayerBehaviourを通過しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
+                }
+
+                // アイテムの回収
+                this.PickUp(playerItemBehaviour);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// DecoyFortressとの接触
+        /// </summary>
+        private bool InteractDecoyFortress(GameObject gameObject, bool triggerState)
+        {
+            DecoyFortressSetting decoyFortressSetting = PlayerBehaviour.GetDecoyFortress(gameObject);
 
             if (decoyFortressSetting != null)
             {
-                // DecoyFortressを削除
-                this.triggeringDecoyFortress.Remove(decoyFortressSetting.GetInstanceID().ToString());
+                if (triggerState)
+                {
+                    this.interactingDecoyFortresses[decoyFortressSetting.GetInstanceID().ToString()] = decoyFortressSetting;
 
-                Debug.Log($"DecoyFortresがPlayerBehaviourを通過しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
+                    Debug.Log($"DecoyFortressがPlayerBehaviourに接触しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingDecoyFortresses.Remove(decoyFortressSetting.GetInstanceID().ToString());
+
+                    Debug.Log($"DecoyFortresがPlayerBehaviourを通過しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
+                }
+
+                return true;
             }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Castleとの接触
+        /// </summary>
+        private bool InteractCastle(GameObject gameObject, bool triggerState)
+        {
+            CastleManager castleManager = PlayerBehaviour.GetCastle(gameObject);
+
+            if (castleManager != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingCastles[castleManager.GetInstanceID().ToString()] = castleManager;
+
+                    Debug.Log($"CastleがPlayerBehaviourに接触しました！（ID: {castleManager.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingCastles.Remove(castleManager.GetInstanceID().ToString());
+
+                    Debug.Log($"CastleがPlayerBehaviourを通過しました！（ID: {castleManager.GetInstanceID()}）");
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -298,7 +513,7 @@ namespace Player
                 return;
 
             // 選択中のアイテムスロットの位置を更新
-            this.selectingSlotPos += this.playerItemSlots.Length == 0 ? 0.0F : scrollVelocity.normalized.y / this.playerItemSlots.Length;
+            this.selectingSlotPos += this.playerItemSlots.Length == 0 ? 0.0F : scrollVelocity.normalized.y / this.playerItemSlots.Length * this.mouseWheelSensitivity;
             this.selectingSlotPos %= 1.0F;
 
             if (this.selectingSlotPos < 0.0F)
@@ -308,6 +523,8 @@ namespace Player
 
             // 誤差を補正
             this.selectingSlotPos = Mathf.Clamp(this.selectingSlotPos, 0.0F, 1.0F);
+
+            Debug.Log(this.GetSelectingSlot());
         }
 
         /// <summary>
@@ -408,6 +625,21 @@ namespace Player
         }
 
         /// <summary>
+        /// アイテムの回収
+        /// </summary>
+        private void PickUp(PlayerItemBehaviour playerItemBehaviour)
+        {
+            if (playerItemBehaviour != null && playerItemBehaviour.enabled)
+            {
+                if (this.AddItem(playerItemBehaviour.PlayerItemState) != -1)
+                {
+                    // PlayerItemBehaviourを消す
+                    UnityEngine.Object.Destroy(playerItemBehaviour);
+                }
+            }
+        }
+
+        /// <summary>
         /// <para>GameObjectからEnemyMovementを取得する</para>
         /// <para>できなかった場合はnull</para>
         /// </summary>
@@ -453,6 +685,20 @@ namespace Player
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// <para>GameObjectからPlayerItemBehaviourを取得する</para>
+        /// <para>できなかった場合はnull</para>
+        /// </summary>
+        public static PlayerItemBehaviour GetPlayerItem(GameObject gameObject)
+        {
+            if (gameObject == null)
+                return null;
+
+            PlayerItemBehaviour playerItemBehaviour = gameObject.GetComponent<PlayerItemBehaviour>();
+
+            return playerItemBehaviour != null && playerItemBehaviour.enabled ? playerItemBehaviour : null;
         }
 
         /// <summary>
