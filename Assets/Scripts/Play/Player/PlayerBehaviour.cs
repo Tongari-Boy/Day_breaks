@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Player
 {
@@ -51,11 +52,14 @@ namespace Player
         [Header("連射モード")]
         [SerializeField] private bool holdingShootingMode = true;
 
-        [Header("プレイヤーのアイテムスロット")]
-        [SerializeField] private PlayerItemState[] playerItemSlots = new PlayerItemState[0];
+        [Header("アイテムスロット")]
+        [SerializeField] private GameObject slotObject;
 
-        [Header("プレイヤーのマウスホイールの感度")]
-        [SerializeField] private float mouseWheelSensitivity = 0.25F;
+        [Header("アイテムスロットのアニメーション時間（秒）")]
+        [SerializeField] private float slotAnimation = 0.5F;
+
+        [Header("プレイヤーの所持するアイテム")]
+        [SerializeField] private PlayerItemState[] playerItemStates = new PlayerItemState[0];
 
         [Header("アイテム使用後のクールダウン（秒）")]
         [SerializeField] private float usingCooldown = 1.0F;
@@ -63,7 +67,10 @@ namespace Player
         private int remainingHealth;
         private float remainingShootingCooldown;
         private float remainingUsingCooldown;
-        private float selectingSlotPos;
+        private float remainingSlotAnimation;
+
+        private float oldSlotPosition;
+        private float newSlotPosition;
 
         private InputAction move;
         private InputAction sprint;
@@ -73,6 +80,8 @@ namespace Player
         private InputAction scroll;
 
         private new Rigidbody2D rigidbody2D;
+        private Canvas canvas;
+        private GameObject[] slotObjects;
 
         private readonly Dictionary<string, EnemyMovement> interactingEnemies = new();
         private readonly Dictionary<string, PlayerItemBehaviour> interactingPlayerItems = new();
@@ -164,7 +173,89 @@ namespace Player
         /// </summary>
         public PlayerItemState[] PlayerItemSlots
         {
-            get { return (PlayerItemState[])this.playerItemSlots.Clone(); }
+            get { return (PlayerItemState[])this.playerItemStates.Clone(); }
+        }
+
+        /// <summary>
+        /// 選択中のスロット番号
+        /// </summary>
+        public int SelectingSlot
+        {
+            get
+            {
+                if (this.playerItemStates.Length > 0)
+                {
+                    int slot = Mathf.CeilToInt(this.SlotPosition) % this.playerItemStates.Length;
+
+                    if (slot < 0)
+                    {
+                        slot += this.playerItemStates.Length;
+                    }
+
+                    return slot;
+                }
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// スロットの位置
+        /// </summary>
+        private float SlotPosition
+        {
+            get
+            {
+                return this.slotAnimation <= 0.0F ? 0.0F : this.newSlotPosition + (this.oldSlotPosition - this.newSlotPosition) * (this.remainingSlotAnimation / this.slotAnimation);
+            }
+        }
+
+        /// <summary>
+        /// スロットのアニメーション補間（0.0F～1.0F）
+        /// </summary>
+        private float SlotStep
+        {
+            get
+            {
+                float step = this.slotAnimation <= 0.0F ? 0.0F : (this.newSlotPosition - this.oldSlotPosition) * (this.remainingSlotAnimation / this.slotAnimation);
+
+                step %= 1.0F;
+
+                if (step < 0.0F)
+                {
+                    step += 1.0F;
+                }
+
+                return step;
+            }
+        }
+
+        /// <summary>
+        /// 選択中のアイテムを使用する
+        /// </summary>
+        public bool UseItem()
+        {
+            PlayerItemState playerItemState = this.GetItem(this.SelectingSlot);
+
+            if (PlayerItemState.IsEmpty(playerItemState))
+            {
+                Debug.Log("空のアイテムスロットを選択しているため、アイテムを使用できませんでした…");
+
+                return false;
+            }
+
+            if (playerItemState.Use(this))
+            {
+                Debug.Log($"プレイヤーがアイテム（ID: {playerItemState.Id}の使用に成功しました！）");
+
+                return true;
+            }
+            else
+            {
+                Debug.Log($"プレイヤーがアイテム（ID: {playerItemState.Id}の使用に失敗しました…");
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -179,9 +270,9 @@ namespace Player
             // 回収できた場合はPlayerItemState.Countを0にする
             if (slot != -1 && playerItemState.Count > 0)
             {
-                playerItemState.Count = 0;
-
                 Debug.Log($"プレイヤーがアイテム（ID: {playerItemState.Id}）を{playerItemState.Count}個、回収しました！");
+
+                playerItemState.Count = 0;
             }
             else
             {
@@ -202,9 +293,9 @@ namespace Player
             PlayerItemState playerItemState;
             int empty = -1;
 
-            for (int i = this.playerItemSlots.Length - 1; i >= 0; --i)
+            for (int i = this.playerItemStates.Length - 1; i >= 0; --i)
             {
-                playerItemState = this.playerItemSlots[i];
+                playerItemState = this.playerItemStates[i];
 
                 if (playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id)
                 {
@@ -223,7 +314,7 @@ namespace Player
             // 空のスロットにアイテムを追加
             if (empty >= 0 && id != PlayerItemState.EMPTY.Id)
             {
-                this.playerItemSlots[empty] = new PlayerItemState(id, count);
+                this.playerItemStates[empty] = new PlayerItemState(id, count);
 
                 return empty;
             }
@@ -237,7 +328,7 @@ namespace Player
         /// </summary>
         public PlayerItemState GetItem(string id)
         {
-            int length = this.playerItemSlots.Length;
+            int length = this.playerItemStates.Length;
 
             PlayerItemState playerItemState;
 
@@ -261,28 +352,19 @@ namespace Player
         /// </summary>
         public PlayerItemState GetItem(int slot)
         {
-            if (this.playerItemSlots.Length > 0)
+            if (this.playerItemStates.Length > 0)
             {
-                int index = slot % this.playerItemSlots.Length;
+                int index = slot % this.playerItemStates.Length;
 
                 if (index < 0)
                 {
-                    index += this.playerItemSlots.Length;
+                    index += this.playerItemStates.Length;
                 }
 
                 return this.PlayerItemSlots[index] ?? PlayerItemState.EMPTY;
             }
 
             return PlayerItemState.EMPTY;
-        }
-
-        /// <summary>
-        /// プレイヤーが選択しているスロット番号を取得する
-        /// </summary>
-        /// <returns></returns>
-        public int GetSelectingSlot()
-        {
-            return Mathf.FloorToInt(this.selectingSlotPos * this.playerItemSlots.Length);
         }
 
         /// <summary>
@@ -293,7 +375,7 @@ namespace Player
             this.remainingHealth = Mathf.Clamp(this.remainingHealth - damageAmount, 0, this.health);
         }
 
-        public void Start()
+        public void Awake()
         {
             // 入力の取得
             InputActionMap playerActions = this.GetComponent<PlayerInput>().currentActionMap;
@@ -308,9 +390,16 @@ namespace Player
             // Rigidbody2Dの取得
             this.rigidbody2D = this.GetComponent<Rigidbody2D>();
 
+            // Canvasの取得
+            this.canvas = this.GetComponentInChildren<Canvas>();
+
             // ステータスの初期化
             this.remainingHealth = this.health;
             this.remainingShootingCooldown = this.shootingCooldown;
+
+            // UIの初期化
+            this.RepaintUI();
+
         }
 
         public void Update()
@@ -318,151 +407,13 @@ namespace Player
             this.Select();
             this.Use();
             this.Shoot();
+            this.RepaintUI();
         }
 
         public void FixedUpdate()
         {
             this.Move();
             this.Follow();
-        }
-
-        public void OnCollisionEnter2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, true); }
-
-        public void OnCollisionExit2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, false); }
-
-        public void OnTriggerEnter2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, true); }
-
-        public void OnTriggerExit2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, false); }
-
-        /// <summary>
-        /// GameObjectとの接触
-        /// </summary>
-        private void InteractGameObject(GameObject gameObject, bool triggerState)
-        {
-            if (this.InteractEnemy(gameObject, triggerState))
-                return;
-
-            if (this.InteractPlayerItem(gameObject, triggerState))
-                return;
-
-            if (this.InteractDecoyFortress(gameObject, triggerState))
-                return;
-
-            if (this.InteractCastle(gameObject, triggerState))
-                return;
-        }
-
-        /// <summary>
-        /// Enemyとの接触
-        /// </summary>
-        private bool InteractEnemy(GameObject gameObject, bool triggerState)
-        {
-            EnemyMovement enemyMovement = PlayerBehaviour.GetEnemy(gameObject);
-
-            if (enemyMovement != null)
-            {
-                if (triggerState)
-                {
-                    this.interactingEnemies[enemyMovement.GetInstanceID().ToString()] = enemyMovement;
-
-                    Debug.Log($"EnemyがPlayerBehaviourに接触しました！（ID: {enemyMovement.GetInstanceID()}）");
-                }
-                else
-                {
-                    this.interactingEnemies.Remove(enemyMovement.GetInstanceID().ToString());
-
-                    Debug.Log($"EnemyがPlayerBehaviourを通過しました！（ID: {enemyMovement.GetInstanceID()}）");
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// PlayerItemとの接触
-        /// </summary>
-        private bool InteractPlayerItem(GameObject gameObject, bool triggerState)
-        {
-            PlayerItemBehaviour playerItemBehaviour = PlayerBehaviour.GetPlayerItem(gameObject);
-
-            if (playerItemBehaviour != null)
-            {
-                if (triggerState)
-                {
-                    this.interactingPlayerItems[playerItemBehaviour.GetInstanceID().ToString()] = playerItemBehaviour;
-
-                    Debug.Log($"PlayerItemがPlayerBehaviourに接触しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
-                }
-                else
-                {
-                    this.interactingPlayerItems.Remove(playerItemBehaviour.GetInstanceID().ToString());
-
-                    Debug.Log($"PlayerItemがPlayerBehaviourを通過しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
-                }
-
-                // アイテムの回収
-                this.PickUp(playerItemBehaviour);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// DecoyFortressとの接触
-        /// </summary>
-        private bool InteractDecoyFortress(GameObject gameObject, bool triggerState)
-        {
-            DecoyFortressSetting decoyFortressSetting = PlayerBehaviour.GetDecoyFortress(gameObject);
-
-            if (decoyFortressSetting != null)
-            {
-                if (triggerState)
-                {
-                    this.interactingDecoyFortresses[decoyFortressSetting.GetInstanceID().ToString()] = decoyFortressSetting;
-
-                    Debug.Log($"DecoyFortressがPlayerBehaviourに接触しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
-                }
-                else
-                {
-                    this.interactingDecoyFortresses.Remove(decoyFortressSetting.GetInstanceID().ToString());
-
-                    Debug.Log($"DecoyFortresがPlayerBehaviourを通過しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Castleとの接触
-        /// </summary>
-        private bool InteractCastle(GameObject gameObject, bool triggerState)
-        {
-            CastleManager castleManager = PlayerBehaviour.GetCastle(gameObject);
-
-            if (castleManager != null)
-            {
-                if (triggerState)
-                {
-                    this.interactingCastles[castleManager.GetInstanceID().ToString()] = castleManager;
-
-                    Debug.Log($"CastleがPlayerBehaviourに接触しました！（ID: {castleManager.GetInstanceID()}）");
-                }
-                else
-                {
-                    this.interactingCastles.Remove(castleManager.GetInstanceID().ToString());
-
-                    Debug.Log($"CastleがPlayerBehaviourを通過しました！（ID: {castleManager.GetInstanceID()}）");
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -502,6 +453,12 @@ namespace Player
         /// </summary>
         private void Select()
         {
+            // アイテムスロットのアニメーションを更新
+            if (this.remainingSlotAnimation > 0.0F)
+            {
+                this.remainingSlotAnimation = Mathf.Max(0.0F, this.remainingSlotAnimation - Time.deltaTime);
+            }
+
             // 入力を確認
             if (this.scroll == null)
                 return;
@@ -509,22 +466,15 @@ namespace Player
             Vector2 scrollVelocity = this.scroll.ReadValue<Vector2>();
 
             // スクロール量を確認
-            if (scrollVelocity.sqrMagnitude <= 0.0F)
-                return;
-
-            // 選択中のアイテムスロットの位置を更新
-            this.selectingSlotPos += this.playerItemSlots.Length == 0 ? 0.0F : scrollVelocity.normalized.y / this.playerItemSlots.Length * this.mouseWheelSensitivity;
-            this.selectingSlotPos %= 1.0F;
-
-            if (this.selectingSlotPos < 0.0F)
+            if (scrollVelocity.y == 0.0F)
             {
-                this.selectingSlotPos += 1.0F;
+                return;
             }
 
-            // 誤差を補正
-            this.selectingSlotPos = Mathf.Clamp(this.selectingSlotPos, 0.0F, 1.0F);
-
-            Debug.Log(this.GetSelectingSlot());
+            // アイテムスロットのアニメーションを設定
+            this.oldSlotPosition = this.remainingSlotAnimation > 0.0F ? this.SlotPosition : this.newSlotPosition;
+            this.newSlotPosition += scrollVelocity.y < 0.0F ? -1 : 1;
+            this.remainingSlotAnimation = this.slotAnimation;
         }
 
         /// <summary>
@@ -543,7 +493,14 @@ namespace Player
             if (this.use == null || !this.use.WasPressedThisFrame())
                 return;
 
-            PlayerItemState playerItemState = this.GetItem(this.GetSelectingSlot());
+            PlayerItemState playerItemState = this.GetItem(this.SelectingSlot);
+
+            if (PlayerItemState.IsEmpty(playerItemState))
+            {
+                Debug.Log("空のアイテムスロットを選択しているため、アイテムを使用できませんでした…");
+
+                return;
+            }
 
             if (playerItemState.Use(this))
             {
@@ -624,17 +581,247 @@ namespace Player
             this.remainingShootingCooldown = this.shootingCooldown;
         }
 
+        public void OnCollisionEnter2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, true); }
+
+        public void OnCollisionExit2D(Collision2D collision) { this.InteractGameObject(collision.gameObject, false); }
+
+        public void OnTriggerEnter2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, true); }
+
+        public void OnTriggerExit2D(Collider2D collider2d) { this.InteractGameObject(collider2d.gameObject, false); }
+
+        /// <summary>
+        /// GameObjectとの接触
+        /// </summary>
+        private void InteractGameObject(GameObject gameObject, bool triggerState)
+        {
+            if (this.InteractEnemy(gameObject, triggerState))
+                return;
+
+            if (this.InteractPlayerItem(gameObject, triggerState))
+                return;
+
+            if (this.InteractDecoyFortress(gameObject, triggerState))
+                return;
+
+            if (this.InteractCastle(gameObject, triggerState))
+                return;
+        }
+
+        /// <summary>
+        /// Enemyとの接触
+        /// </summary>
+        private bool InteractEnemy(GameObject gameObject, bool triggerState)
+        {
+            EnemyMovement enemyMovement = PlayerBehaviour.GetEnemy(gameObject);
+
+            if (enemyMovement != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingEnemies[enemyMovement.GetInstanceID().ToString()] = enemyMovement;
+
+                    Debug.Log($"EnemyがPlayerBehaviourに接触しました！（ID: {enemyMovement.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingEnemies.Remove(enemyMovement.GetInstanceID().ToString());
+
+                    Debug.Log($"EnemyがPlayerBehaviourを通過しました！（ID: {enemyMovement.GetInstanceID()}）");
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// PlayerItemとの接触
+        /// </summary>
+        private bool InteractPlayerItem(GameObject gameObject, bool triggerState)
+        {
+            PlayerItemBehaviour playerItemBehaviour = PlayerBehaviour.GetPlayerItem(gameObject);
+
+            if (playerItemBehaviour != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingPlayerItems[playerItemBehaviour.GetInstanceID().ToString()] = playerItemBehaviour;
+
+                    Debug.Log($"PlayerItemがPlayerBehaviourに接触しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingPlayerItems.Remove(playerItemBehaviour.GetInstanceID().ToString());
+
+                    Debug.Log($"PlayerItemがPlayerBehaviourを通過しました！（ID: {playerItemBehaviour.GetInstanceID()}）");
+                }
+
+                // アイテムの回収
+                this.PickUpItem(playerItemBehaviour);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// DecoyFortressとの接触
+        /// </summary>
+        private bool InteractDecoyFortress(GameObject gameObject, bool triggerState)
+        {
+            DecoyFortressSetting decoyFortressSetting = PlayerBehaviour.GetDecoyFortress(gameObject);
+
+            if (decoyFortressSetting != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingDecoyFortresses[decoyFortressSetting.GetInstanceID().ToString()] = decoyFortressSetting;
+
+                    Debug.Log($"DecoyFortressがPlayerBehaviourに接触しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingDecoyFortresses.Remove(decoyFortressSetting.GetInstanceID().ToString());
+
+                    Debug.Log($"DecoyFortresがPlayerBehaviourを通過しました！（ID: {decoyFortressSetting.GetInstanceID()}）");
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Castleとの接触
+        /// </summary>
+        private bool InteractCastle(GameObject gameObject, bool triggerState)
+        {
+            CastleManager castleManager = PlayerBehaviour.GetCastle(gameObject);
+
+            if (castleManager != null)
+            {
+                if (triggerState)
+                {
+                    this.interactingCastles[castleManager.GetInstanceID().ToString()] = castleManager;
+
+                    Debug.Log($"CastleがPlayerBehaviourに接触しました！（ID: {castleManager.GetInstanceID()}）");
+                }
+                else
+                {
+                    this.interactingCastles.Remove(castleManager.GetInstanceID().ToString());
+
+                    Debug.Log($"CastleがPlayerBehaviourを通過しました！（ID: {castleManager.GetInstanceID()}）");
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// アイテムの回収
         /// </summary>
-        private void PickUp(PlayerItemBehaviour playerItemBehaviour)
+        private void PickUpItem(PlayerItemBehaviour playerItemBehaviour)
         {
             if (playerItemBehaviour != null && playerItemBehaviour.enabled)
             {
                 if (this.AddItem(playerItemBehaviour.PlayerItemState) != -1)
                 {
                     // PlayerItemBehaviourを消す
-                    UnityEngine.Object.Destroy(playerItemBehaviour);
+                    UnityEngine.Object.Destroy(playerItemBehaviour.gameObject);
+                }
+            }
+        }
+
+        /// <summary>
+        /// UIの更新
+        /// </summary>
+        private void RepaintUI()
+        {
+            if (this.slotObject == null || this.canvas == null)
+                return;
+
+            // アイテムスロットの表示数
+            int slotCounts = 7;
+
+            // アイテムスロットのサイズ
+            float slotSize = 64.0F;
+
+            // 配列の初期化
+            if (this.slotObjects == null)
+            {
+                this.slotObjects = new GameObject[slotCounts];
+            }
+
+            // アイテムスロットの位置を計算
+            RectTransform canvasTransform = this.canvas.GetComponent<RectTransform>();
+            float width = canvasTransform.sizeDelta.x;
+            float height = canvasTransform.sizeDelta.y;
+            float movement = this.SlotStep;
+            int offset = slotCounts >> 1;
+            float slotScale;
+
+            GameObject slotObject;
+            GameObject backgroundObject;
+            GameObject displayObject;
+
+            Image backgroundImage;
+            Image displayImage;
+
+            PlayerItemRegistry.PlayerItemSpriteHolder spriteHolder;
+
+            for (int i = 0; i < slotCounts; ++i)
+            {
+                slotObject = this.slotObjects[i];
+
+                // アイテムスロットを生成
+                if (slotObject == null)
+                {
+                    this.slotObjects[i] = slotObject = UnityEngine.Object.Instantiate(this.slotObject, Vector3.zero, Quaternion.identity, this.canvas.transform);
+                }
+
+                // アイテムスロットを移動
+                slotScale = 1.0F - Mathf.Abs((i + movement - offset) / slotCounts);
+
+                slotObject.transform.position = new(width - slotSize, height * 0.5F + (i + movement - offset) * slotScale * slotSize, 0.0F);
+                slotObject.transform.localScale = new(slotScale * 0.5F, slotScale * 0.5F, 1.0F);
+                slotObject.transform.SetSiblingIndex(Mathf.Abs(offset - i));
+
+                // アイテムスロットの表示
+                if (slotObject.transform.childCount >= 2)
+                {
+                    backgroundObject = slotObject.transform.GetChild(0).gameObject;
+                    backgroundImage = backgroundObject.GetComponent<Image>();
+
+                    if (backgroundImage != null)
+                    {
+                        backgroundImage.color = new(0.0F, 0.0F, 0.0F, 0.5F * slotScale * slotScale);
+                    }
+
+                    displayObject = slotObject.transform.GetChild(1).gameObject;
+                    displayImage = displayObject.GetComponent<Image>();
+
+                    if (displayImage != null)
+                    {
+                        // 色の設定
+                        displayImage.color = new(1.0F, 1.0F, 1.0F, 1.0F * slotScale * slotScale);
+
+                        // スプライトの設定
+                        spriteHolder = PlayerItemRegistry.INSTANCE.GetSprite(this.GetItem(this.SelectingSlot - offset + i).Id);
+
+                        if (spriteHolder != null && spriteHolder.sprite != null)
+                        {
+                            displayImage.sprite = spriteHolder.sprite;
+                            displayImage.enabled = true;
+                        }
+                        else
+                        {
+                            displayImage.sprite = null;
+                            displayImage.enabled = false;
+                        }
+                    }
                 }
             }
         }

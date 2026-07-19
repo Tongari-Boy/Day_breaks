@@ -15,17 +15,23 @@ namespace Player.Item
         public static readonly PlayerItemState EMPTY = new EmptyItemState();
 
         [Header("アイテムのID")]
-        [SerializeField] private string id;
+        [SerializeField] private string id = "";
 
         [Header("アイテムの個数")]
-        [SerializeField] private int count;
+        [SerializeField] private int count = 0;
 
+        /// <summary>
+        /// アイテムのID
+        /// </summary>
         public string Id
         {
             get { return this.id; }
             set { this.id = value ?? ""; }
         }
 
+        /// <summary>
+        /// アイテムの個数
+        /// </summary>
         public int Count
         {
             get { return this.count; }
@@ -36,6 +42,11 @@ namespace Player.Item
         {
             this.Id = id;
             this.Count = count;
+        }
+
+        public static bool IsEmpty(PlayerItemState playerItemState)
+        {
+            return playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id;
         }
 
         /// <summary>

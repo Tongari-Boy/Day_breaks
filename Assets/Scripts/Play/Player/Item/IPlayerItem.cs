@@ -29,6 +29,14 @@ namespace Player.Item
         }
 
         /// <summary>
+        /// アイテムのスプライト
+        /// </summary>
+        public Sprite Sprite
+        {
+            get { return null; }
+        }
+
+        /// <summary>
         /// アイテムを使用できるかどうか
         /// </summary>
         bool CanUse(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)

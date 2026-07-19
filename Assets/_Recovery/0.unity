@@ -829,9 +829,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.Item.ItemDropSpawner
   playerItemObject: {fileID: 6083902087670025328, guid: de76d991802c9664ebe141130ebf2597, type: 3}
   playerItemSprites:
-  - id: 
-    sprite: {fileID: 0}
-    color: {r: 0, g: 0, b: 0, a: 0}
+  - id: example
+    sprite: {fileID: -5351809444007337024, guid: be64057e6a9dd6345971b382030ee28c, type: 3}
+    color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &301076039
 Transform:
   m_ObjectHideFlags: 0

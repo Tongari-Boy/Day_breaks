@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 
 namespace Player.Item
@@ -19,13 +20,18 @@ namespace Player.Item
         /// </summary>
         private readonly Dictionary<string, PlayerItemHolder> playerItems = new();
 
+        /// <summary>
+        /// 登録されたスプライトホルダー
+        /// </summary>
+        private readonly Dictionary<string, PlayerItemSpriteHolder> playerItemSprites = new();
+
         private PlayerItemRegistry()
         {
             this.Initialize();
         }
 
         /// <summary>
-        /// 新しいアイテムを登録する
+        /// アイテムを登録する
         /// </summary>
         public bool Register(IPlayerItem playerItem)
         {
@@ -42,6 +48,8 @@ namespace Player.Item
             try
             {
                 this.playerItems.Add(playerItem.Id, new PlayerItemHolder(playerItem));
+
+                Debug.Log($"アイテム（ID: {playerItem.Id}）が登録されました！");
 
                 return true;
             }
@@ -66,12 +74,8 @@ namespace Player.Item
         /// </summary>
         public bool Use(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)
         {
-            if (playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id)
-            {
-                Debug.LogWarning($"PlayerItemStateは空であるため使用できません…");
-
+            if (PlayerItemState.IsEmpty(playerItemState))
                 return false;
-            }
 
             if (playerBehaviour == null)
             {
@@ -102,6 +106,52 @@ namespace Player.Item
         }
 
         /// <summary>
+        /// <para>Spriteの登録／削除をする</para>
+        /// <para>削除するには引数spriteをnullにする</para>
+        /// <para>IDはアイテムのIDと同じにする</para>
+        /// </summary>
+        public bool SetSprite(string id, Sprite sprite, Color color)
+        {
+            if (id == null || id == "")
+            {
+                Debug.LogWarning("アイテムIDが空であるため、Spriteを登録できません！");
+
+                return false;
+            }
+
+            if (sprite != null)
+            {
+                this.playerItemSprites[id] = new PlayerItemSpriteHolder(sprite, color);
+
+                Debug.Log($"アイテムのスプライト（ID: {id}）が登録されました！");
+
+                return true;
+            }
+            else if (this.playerItemSprites.Remove(id))
+            {
+                Debug.Log($"アイテムのスプライト（ID: {id}）が削除されました！");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// <para>登録されたSpriteを取得する</para>
+        /// <para>存在しない場合はnull</para>
+        /// </summary>
+        public PlayerItemSpriteHolder GetSprite(string id)
+        {
+            if (id != null && id != "" && this.playerItemSprites.ContainsKey(id))
+            {
+                return this.playerItemSprites[id];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// レジストリにアイテムを登録する
         /// </summary>
         public void Initialize()
@@ -113,16 +163,38 @@ namespace Player.Item
         /// <summary>
         /// アイテムホルダー
         /// </summary>
-        private class PlayerItemHolder
+        public class PlayerItemHolder
         {
             /// <summary>
             /// アイテム
             /// </summary>
-            public IPlayerItem playerItem;
+            public readonly IPlayerItem playerItem;
 
             public PlayerItemHolder(IPlayerItem playerItem)  
             {
                 this.playerItem = playerItem;
+            }
+        }
+
+        /// <summary>
+        /// スプライトホルダー
+        /// </summary>
+        public class PlayerItemSpriteHolder
+        {
+            /// <summary>
+            /// スプライト
+            /// </summary>
+            public readonly Sprite sprite;
+
+            /// <summary>
+            /// スプライトの色
+            /// </summary>
+            public readonly Color color;
+
+            public PlayerItemSpriteHolder(Sprite sprite, Color color)
+            {
+                this.sprite = sprite;
+                this.color = color;
             }
         }
     }
