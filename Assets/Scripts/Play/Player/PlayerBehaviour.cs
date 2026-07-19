@@ -634,7 +634,7 @@ namespace Player
                 if (this.AddItem(playerItemBehaviour.PlayerItemState) != -1)
                 {
                     // PlayerItemBehaviourを消す
-                    UnityEngine.Object.Destroy(playerItemBehaviour);
+                    UnityEngine.Object.Destroy(playerItemBehaviour.gameObject);
                 }
             }
         }

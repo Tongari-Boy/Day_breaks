@@ -121,6 +121,7 @@ namespace DecoyFortress
         public void Build()
         {
             fortressHP = FortressMaxHP;
+            fortressUI.UpdateHP(fortressHP);
             SetEnable(true);
         }
 
