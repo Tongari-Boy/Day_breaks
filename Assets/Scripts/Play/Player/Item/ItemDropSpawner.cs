@@ -38,6 +38,8 @@ namespace Player.Item
                 playerItemBehaviour.PlayerItemState.Id = itemId;
                 playerItemBehaviour.PlayerItemState.Count = itemCount;
             }
+
+            playerItemObject.GetOrAddComponent<ItemPickUp>();
         }
     }
 }
