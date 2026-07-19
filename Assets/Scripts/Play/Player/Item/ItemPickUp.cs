@@ -34,32 +34,13 @@ namespace Player.Item
                 return;
             }
 
-            if(AddToInventory(playerBehaviour))
+            int slot = playerBehaviour.AddItem(this.playerItemBehaviour.PlayerItemState);
+
+            // 回収できたときはオブジェクトを破棄
+            if(slot != -1)
             {
                 Destroy(gameObject);
             }
-            
-        }
-
-        /// <summary>
-        /// プレイヤのインベリに触れたアイテムを入れる
-        /// </summary>
-        private bool AddToInventory(Player.PlayerBehaviour playerBehaviour)
-        {
-            PlayerItemState state = this.playerItemBehaviour.PlayerItemState;
-
-            bool added = playerBehaviour.AddItem(state.Id,state.Count) != -1;
-
-            if(added)
-            {
-                Debug.Log($"{state.Id}を{state.Count}個取得");
-            }
-            else
-            {
-                Debug.Log("アイテム取得:失敗");
-            }
-
-            return added;
         }
     }
 }

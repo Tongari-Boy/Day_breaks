@@ -213,4 +213,5 @@ MonoBehaviour:
   shootingCooldown: 0.1
   holdingShootingMode: 1
   playerItemSlots: []
+  mouseWheelSensitivity: 0.25
   usingCooldown: 1
