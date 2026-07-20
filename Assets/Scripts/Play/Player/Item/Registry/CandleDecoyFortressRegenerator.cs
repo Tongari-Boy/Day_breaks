@@ -1,4 +1,4 @@
-using DecoyFortress;
+﻿using DecoyFortress;
 
 namespace Player.Item
 {
@@ -11,7 +11,7 @@ namespace Player.Item
 
         public override string Name
         {
-            get { return "Candle_Decoy Fortress Regenerator"; }
+            get { return "Candle Decoy Fortress Regenerator"; }
         }
 
         public override DecoyFortressSetting.DecoyFortressIDs DecoyFortressID

@@ -24,7 +24,7 @@ namespace Player.Item
             // PlayerBehaviourが検知しているDecoyFortressを取得
             foreach (DecoyFortressSetting decoyFortressSetting in playerBehaviour.InteractingDecoyFortresses)
             {
-                if (decoyFortressSetting != null && decoyFortressSetting.enabled && !decoyFortressSetting.GetEnable())
+                if (decoyFortressSetting != null && decoyFortressSetting.enabled && !decoyFortressSetting.GetEnable() && decoyFortressSetting.GetID() == this.DecoyFortressID)
                 {
                     this.DoUse(playerItemState, playerBehaviour, decoyFortressSetting);
 

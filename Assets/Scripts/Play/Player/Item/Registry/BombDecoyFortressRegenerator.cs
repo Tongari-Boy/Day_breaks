@@ -1,4 +1,4 @@
-using DecoyFortress;
+﻿using DecoyFortress;
 using UnityEngine;
 
 namespace Player.Item
@@ -12,7 +12,7 @@ namespace Player.Item
 
         public override string Name
         {
-            get { return "Bomb_Decoy Fortress Regenerator"; }
+            get { return "Bomb Decoy Fortress Regenerator"; }
         }
 
         public override DecoyFortressSetting.DecoyFortressIDs DecoyFortressID
