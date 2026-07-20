@@ -8,6 +8,18 @@ namespace DecoyFortress
     /// </summary>
     public class DecoyFortressSetting : MonoBehaviour, IDamageable, IEnable
     {
+        /// <summary>
+        /// 罠砦の種類の定義
+        /// </summary>
+        public enum DecoyFortressIDs
+        {
+            Normal,
+            Stop,       // 鈍足化効果のタイマー
+            Candle,     // ろうそく(攻撃力小)
+            Sword,      // 剣(攻撃力大)
+            Bomb        // デモ:爆発
+        }
+
         [Header("UI設定")]
         [SerializeField] private GameObject uiPrefab; // DecoyFortessUIがアタッチされたPrefab
         [SerializeField] private Vector3 uiOffset = new Vector3(0, 2f, 0); // 砦の上のオフセット値
@@ -35,6 +47,12 @@ namespace DecoyFortress
         /// </summary>
         private DecoyFortressUI fortressUI;
 
+        /// <summary>
+        /// 罠砦の種類
+        /// 
+        /// 初期値はNormal
+        /// </summary>
+        [SerializeField] private DecoyFortressIDs fotressID = DecoyFortressIDs.Normal;
         /// <summary>
         /// 罠砦の初期化処理
         /// 
@@ -146,6 +164,15 @@ namespace DecoyFortress
         public bool GetEnable()
         {
             return fortressEnabled;
+        }
+
+        /// <summary>
+        /// 罠砦の種類を返す
+        /// </summary>
+        /// <returns>罠砦ID</returns>
+        public DecoyFortressIDs GetID()
+        {
+            return this.fotressID;
         }
     }
 }

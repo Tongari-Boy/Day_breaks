@@ -11,11 +11,34 @@ namespace DecoyFortress
         [Header("DecoyFortressSettingのついた罠砦をすべてアタッチ")]
         [SerializeField]private List<DecoyFortressSetting> fortresses;
 
+        private List<DecoyFortressMovement> movements;
+
         public void Initialize()
         {
+            movements = new List<DecoyFortressMovement>();
+
             foreach (var fortress in fortresses)
             {
                 fortress.Initialize();
+
+                // 同じGameObjectについているMovementを自動取得
+                var movement = fortress.GetComponent<DecoyFortressMovement>();
+                if (movement != null)
+                {
+                    movements.Add(movement);
+                }
+                else
+                {
+                    Debug.LogWarning($"{fortress.name} に DecoyFortressMovement がアタッチされていません");
+                }
+            }
+        }
+
+        public void OnUpdate()
+        {
+            foreach (var movement in movements)
+            {
+                movement.OnUpdate();
             }
         }
 
