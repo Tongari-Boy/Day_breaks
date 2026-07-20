@@ -70,6 +70,20 @@ namespace Player.Item
         }
 
         /// <summary>
+        /// <para>登録されたアイテムを取得する</para>
+        /// <para>存在しない場合はnull</para>
+        /// </summary>
+        public PlayerItemHolder Get(string id)
+        {
+            if (id != null && id != "" && this.playerItems.ContainsKey(id))
+            {
+                return this.playerItems[id];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// 登録されたアイテムを使用する
         /// </summary>
         public bool Use(PlayerItemState playerItemState, PlayerBehaviour playerBehaviour)

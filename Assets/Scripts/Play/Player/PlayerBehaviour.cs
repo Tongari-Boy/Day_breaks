@@ -4,6 +4,7 @@ using Enemy;
 using Player.Bullet;
 using Player.Item;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -747,7 +748,7 @@ namespace Player
             int slotCounts = 7;
 
             // アイテムスロットのサイズ
-            float slotSize = 64.0F;
+            float slotSize = 128.0F;
 
             // 配列の初期化
             if (this.slotObjects == null)
@@ -760,21 +761,24 @@ namespace Player
             float width = canvasTransform.sizeDelta.x;
             float height = canvasTransform.sizeDelta.y;
             float movement = this.SlotStep;
-            int offset = slotCounts >> 1;
             float slotScale;
+            float alphaScale;
+            int offset = slotCounts >> 1;
+            int order;
 
             GameObject slotObject;
-            GameObject backgroundObject;
-            GameObject displayObject;
+            GameObject uiObject;
+            Image uiImage;
+            TextMeshProUGUI uiTextMeshPro;
 
-            Image backgroundImage;
-            Image displayImage;
-
+            PlayerItemState playerItemState;
+            PlayerItemRegistry.PlayerItemHolder itemHolder;
             PlayerItemRegistry.PlayerItemSpriteHolder spriteHolder;
 
             for (int i = 0; i < slotCounts; ++i)
             {
                 slotObject = this.slotObjects[i];
+                order = Mathf.Abs(offset - i);
 
                 // アイテムスロットを生成
                 if (slotObject == null)
@@ -784,43 +788,104 @@ namespace Player
 
                 // アイテムスロットを移動
                 slotScale = 1.0F - Mathf.Abs((i + movement - offset) / slotCounts);
+                alphaScale = slotScale * slotScale;
 
-                slotObject.transform.position = new(width - slotSize, height * 0.5F + (i + movement - offset) * slotScale * slotSize, 0.0F);
+                slotObject.transform.position = new(width - slotSize, height * 0.5F + (i + movement - offset) * slotSize * slotScale, 0.0F);
                 slotObject.transform.localScale = new(slotScale * 0.5F, slotScale * 0.5F, 1.0F);
-                slotObject.transform.SetSiblingIndex(Mathf.Abs(offset - i));
+                slotObject.transform.SetSiblingIndex(order);
+
+                // アイテムスロットのサイズ変更
+                if (slotObject.transform is RectTransform slotTransform)
+                {
+                    slotTransform.sizeDelta = new(slotSize, slotSize);
+                }
 
                 // アイテムスロットの表示
-                if (slotObject.transform.childCount >= 2)
+                if (slotObject.transform.childCount >= 3)
                 {
-                    backgroundObject = slotObject.transform.GetChild(0).gameObject;
-                    backgroundImage = backgroundObject.GetComponent<Image>();
+                    playerItemState = this.GetItem(this.SelectingSlot - offset + i);
 
-                    if (backgroundImage != null)
+                    // 背景を設定
+                    uiObject = slotObject.transform.GetChild(0).gameObject;
+                    uiImage = uiObject?.GetComponent<Image>();
+
+                    if (uiObject.transform is RectTransform backgroundTransform)
                     {
-                        backgroundImage.color = new(0.0F, 0.0F, 0.0F, 0.5F * slotScale * slotScale);
+                        backgroundTransform.sizeDelta = new(slotSize, slotSize);
                     }
 
-                    displayObject = slotObject.transform.GetChild(1).gameObject;
-                    displayImage = displayObject.GetComponent<Image>();
+                    if (uiImage != null)
+                    {
+                        uiImage.color = new(0.0F, 0.0F, 0.0F, 0.5F * alphaScale);
+                    }
 
-                    if (displayImage != null)
+                    // アイテムの表示を設定
+                    uiObject = slotObject.transform.GetChild(1).gameObject;
+                    uiImage = uiObject?.GetComponent<Image>();
+
+                    if (uiObject.transform is RectTransform displayTransform)
+                    {
+                        displayTransform.sizeDelta = new(slotSize, slotSize);
+                    }
+
+                    if (uiImage != null)
                     {
                         // 色の設定
-                        displayImage.color = new(1.0F, 1.0F, 1.0F, 1.0F * slotScale * slotScale);
+                        uiImage.color = new(1.0F, 1.0F, 1.0F, 1.0F * alphaScale);
 
                         // スプライトの設定
-                        spriteHolder = PlayerItemRegistry.INSTANCE.GetSprite(this.GetItem(this.SelectingSlot - offset + i).Id);
+                        spriteHolder = PlayerItemRegistry.INSTANCE.GetSprite(playerItemState.Id);
 
                         if (spriteHolder != null && spriteHolder.sprite != null)
                         {
-                            displayImage.sprite = spriteHolder.sprite;
-                            displayImage.enabled = true;
+                            uiImage.sprite = spriteHolder.sprite;
+                            uiImage.enabled = true;
                         }
                         else
                         {
-                            displayImage.sprite = null;
-                            displayImage.enabled = false;
+                            uiImage.sprite = null;
+                            uiImage.enabled = false;
                         }
+                    }
+
+                    // アイテムの個数を設定
+                    uiObject = slotObject.transform.GetChild(2).gameObject;
+                    uiTextMeshPro = uiObject?.GetComponent<TextMeshProUGUI>();
+
+                    if (uiObject.transform is RectTransform countTransform)
+                    {
+                        countTransform.sizeDelta = new(slotSize, slotSize);
+                    }
+
+                    if (uiTextMeshPro != null)
+                    {
+                        uiTextMeshPro.text = playerItemState.Count > 0 ? $"× {playerItemState.Count}" : "";
+                        uiTextMeshPro.color = new(1.0F, 1.0F, 1.0F, 1.0F * alphaScale);
+                    }
+
+                    // アイテムの名前を設定
+                    uiObject = slotObject.transform.GetChild(3).gameObject;
+                    uiTextMeshPro = uiObject?.GetComponent<TextMeshProUGUI>();
+
+                    if (uiObject.transform is RectTransform nameTransform)
+                    {
+                        nameTransform.sizeDelta = new(slotSize, slotSize);
+                    }
+
+                    if (uiTextMeshPro != null)
+                    {
+                        itemHolder = PlayerItemRegistry.INSTANCE.Get(playerItemState.Id);
+
+                        if (itemHolder != null && itemHolder.playerItem != null)
+                        {
+                            uiTextMeshPro.text = itemHolder.playerItem.Name;
+                        }
+                        else
+                        {
+                            uiTextMeshPro.text = "Unknown";
+                        }
+
+                        uiTextMeshPro.color = new(1.0F, 1.0F, 1.0F, 1.0F * alphaScale);
                     }
                 }
             }
