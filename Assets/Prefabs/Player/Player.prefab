@@ -325,4 +325,6 @@ MonoBehaviour:
     count: 0
   - id: 
     count: 0
+  - id: 
+    count: 0
   usingCooldown: 0
