@@ -6,16 +6,14 @@ namespace Player.Item
     /// ステージに落ちているアイテム
     /// プレイヤが触れると所持数に加算される
     /// </summary>
+    [RequireComponent(typeof(PlayerItemBehaviour))]
     public class ItemPickUp : MonoBehaviour
     {
-        [SerializeField] private string itemId;
+        private PlayerItemBehaviour playerItemBehaviour;
 
-        [Header("拾得時に加算する個数(基本的に1)")]
-        [SerializeField] private int amount = 1;
-
-        public void SetUp(string itemId)
+        private void Awake()
         {
-            this.itemId = itemId;
+            this.playerItemBehaviour = this.GetComponent<PlayerItemBehaviour>();
         }
 
         /// <summary>
@@ -36,30 +34,13 @@ namespace Player.Item
                 return;
             }
 
-            if(AddToInventory(playerBehaviour))
+            int slot = playerBehaviour.AddItem(this.playerItemBehaviour.PlayerItemState);
+
+            // 回収できたときはオブジェクトを破棄
+            if(slot != -1)
             {
                 Destroy(gameObject);
             }
-            
-        }
-
-        /// <summary>
-        /// プレイヤのインベリに触れたアイテムを入れる
-        /// </summary>
-        private bool AddToInventory(Player.PlayerBehaviour playerBehaviour)
-        {
-            bool added = playerBehaviour.AddItem(itemId,amount) != -1;
-
-            if(added)
-            {
-                Debug.Log($"{itemId}を{amount}個取得");
-            }
-            else
-            {
-                Debug.Log("アイテム取得:失敗");
-            }
-
-            return added;
         }
     }
 }

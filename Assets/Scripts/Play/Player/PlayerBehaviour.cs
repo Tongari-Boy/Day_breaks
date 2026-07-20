@@ -297,7 +297,7 @@ namespace Player
             {
                 playerItemState = this.playerItemStates[i];
 
-                if (playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id)
+                if (PlayerItemState.IsEmpty(playerItemState))
                 {
                     // 空のスロット番号を記憶
                     empty = i;
@@ -361,7 +361,7 @@ namespace Player
                     index += this.playerItemStates.Length;
                 }
 
-                return this.PlayerItemSlots[index] ?? PlayerItemState.EMPTY;
+                return PlayerItemState.IsEmpty(this.PlayerItemSlots[index]) ? PlayerItemState.EMPTY : this.PlayerItemSlots[index];
             }
 
             return PlayerItemState.EMPTY;

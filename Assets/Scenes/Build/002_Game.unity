@@ -481,8 +481,10 @@ MonoBehaviour:
   bulletSpawnDistance: 1
   shootingCooldown: 0.1
   holdingShootingMode: 1
-  playerItemSlots: []
-  playerItemSlotSize: 3
+  playerItemSlots:
+  - id: decoy_fortress_regenerator
+    count: 0
+  mouseWheelSensitivity: 0.25
   usingCooldown: 1
 --- !u!50 &399395337
 Rigidbody2D:
@@ -962,33 +964,6 @@ MonoBehaviour:
   - spawnTime: 10
     spawnPosition: {x: 2, y: 2}
     enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 10
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
   enemyManager: {fileID: 1969045256}
 --- !u!4 &643085152
 Transform:
@@ -1285,7 +1260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd0f70ed0f19d344be0f71ce37ae289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.Item.ItemDropSpawner
-  itemPickupPrefab: {fileID: 2042647916928207170, guid: de76d991802c9664ebe141130ebf2597, type: 3}
+  playerItemObject: {fileID: 6083902087670025328, guid: de76d991802c9664ebe141130ebf2597, type: 3}
 --- !u!4 &785514677
 Transform:
   m_ObjectHideFlags: 0
@@ -1512,7 +1487,7 @@ GameObject:
   - component: {fileID: 1060496445}
   m_Layer: 0
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

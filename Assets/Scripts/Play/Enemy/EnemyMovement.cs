@@ -288,7 +288,7 @@ namespace Enemy
             {
                 enemyHP = 0;
                 // アイテムの生成
-                ItemDropSpawner.INSTANCE.Drop("example", transform.position);
+                ItemDropSpawner.INSTANCE.Drop("decoy_fortress_regenerator", transform.position);
                 Destroy(gameObject);
             }
         }

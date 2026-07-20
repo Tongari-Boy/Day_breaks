@@ -46,7 +46,7 @@ namespace Player.Item
 
         public static bool IsEmpty(PlayerItemState playerItemState)
         {
-            return playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id;
+            return playerItemState == null || playerItemState.Id == PlayerItemState.EMPTY.Id || playerItemState.Count <= 0;
         }
 
         /// <summary>

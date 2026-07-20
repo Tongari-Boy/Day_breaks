@@ -31,6 +31,9 @@ namespace Player.Item
         /// <param name="playerItemRegistry"></param>
         private void Register(PlayerItemRegistry playerItemRegistry)
         {
+            if (this.playerItemSprites == null)
+                return;
+
             foreach (PlayerItemSprite playerItemSprite in this.playerItemSprites)
             {
                 playerItemRegistry.SetSprite(playerItemSprite.id, playerItemSprite.sprite, playerItemSprite.color);
@@ -77,8 +80,12 @@ namespace Player.Item
                 {
                     spriteRenderer.sprite = playerItemSpriteHolder.sprite;
                     spriteRenderer.color = playerItemSpriteHolder.color;
+                }
 
-                    Debug.Log(playerItemSpriteHolder.color);
+                // Spriteがレジストリに登録されていなければ登録
+                if (playerItemSpriteHolder == null)
+                {
+                    PlayerItemRegistry.INSTANCE.SetSprite(itemId, spriteRenderer.sprite, spriteRenderer.color);
                 }
             }
         }
