@@ -43,7 +43,7 @@ namespace Player
 
         [Header("弾の寿命（秒）")]
         [SerializeField] private float bulletDuration = 8.0F;
-
+        
         [Header("弾のスポーン位置までの距離")]
         [SerializeField] private float bulletSpawnDistance = 0.25F;
 
@@ -69,7 +69,6 @@ namespace Player
         private float remainingShootingCooldown;
         private float remainingUsingCooldown;
         private float remainingSlotAnimation;
-
         private float oldSlotPosition;
         private float newSlotPosition;
 
@@ -80,7 +79,8 @@ namespace Player
         private InputAction cursor;
         private InputAction scroll;
 
-        private new Rigidbody2D rigidbody2D;
+        private new Rigidbody2D rigidbody2d;
+        private GameObject shooterInstance;
         private Canvas canvas;
         private GameObject[] slotObjects;
 
@@ -389,7 +389,7 @@ namespace Player
             this.scroll = playerActions.FindAction("Scroll");
 
             // Rigidbody2Dの取得
-            this.rigidbody2D = this.GetComponent<Rigidbody2D>();
+            this.rigidbody2d = this.GetComponent<Rigidbody2D>();
 
             // Canvasの取得
             this.canvas = this.GetComponentInChildren<Canvas>();
@@ -405,7 +405,7 @@ namespace Player
 
         public void Update()
         {
-            this.Select();
+            this.SelectSlot();
             this.Use();
             this.Shoot();
             this.RepaintUI();
@@ -414,7 +414,17 @@ namespace Player
         public void FixedUpdate()
         {
             this.Move();
-            this.Follow();
+            this.FollowShooter();
+            this.FollowCamera();
+        }
+
+        public void OnDestroy()
+        {
+            // シューターを消す
+            if (this.shooterInstance != null)
+            {
+                UnityEngine.Object.Destroy(this.shooterInstance);
+            }
         }
 
         /// <summary>
@@ -427,7 +437,7 @@ namespace Player
                 return;
 
             // Rigidbody2Dを確認
-            if (this.rigidbody2D == null)
+            if (this.rigidbody2d == null)
                 return;
 
             // 速度の計算
@@ -435,24 +445,52 @@ namespace Player
             float finalSpeed = this.sprint != null && this.sprint.IsPressed() ? this.sprintSpeed : this.movementSpeed;
 
             // 速度の適用
-            this.rigidbody2D.linearVelocity = direction * finalSpeed;
+            this.rigidbody2d.linearVelocity = direction * finalSpeed;
         }
 
         /// <summary>
-        /// カメラの更新
+        /// シューターの追従
         /// </summary>
-        private void Follow()
+        private void FollowShooter()
         {
-            if (this.cameraFollowingMode && Camera.main != null)
+            if (this.shooterInstance == null)
             {
-                Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, Camera.main.transform.position.z);
+                // シューターインスタンスを生成する
+                if (this.shooterObject != null)
+                {
+                    this.shooterInstance = UnityEngine.Object.Instantiate(this.shooterObject, this.transform.position, Quaternion.identity.normalized);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (this.cursor != null && UnityEngine.Camera.main != null)
+            {
+                Vector2 cursorPos = this.cursor.ReadValue<Vector2>();
+                Vector2 shooterPos = UnityEngine.Camera.main.ScreenToWorldPoint(new UnityEngine.Vector3(cursorPos.x, cursorPos.y, 0.0F));
+                Vector3 shooterDir = Vector2.Normalize(new Vector2(shooterPos.x, shooterPos.y) - new Vector2(this.transform.position.x, this.transform.position.y));
+
+                this.shooterInstance.transform.position = this.transform.position + shooterDir;
+            }
+        }
+
+        /// <summary>
+        /// カメラの追従
+        /// </summary>
+        private void FollowCamera()
+        {
+            if (this.cameraFollowingMode && UnityEngine.Camera.main != null)
+            {
+                UnityEngine.Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, UnityEngine.Camera.main.transform.position.z);
             }
         }
 
         /// <summary>
         /// アイテムの選択
         /// </summary>
-        private void Select()
+        private void SelectSlot()
         {
             // アイテムスロットのアニメーションを更新
             if (this.remainingSlotAnimation > 0.0F)
@@ -553,18 +591,18 @@ namespace Player
             }
 
             // シューターを設定
-            GameObject shooterObject = this.shooterObject == null ? this.gameObject : this.shooterObject;
+            GameObject shooterInstance = this.shooterInstance != null ? this.shooterInstance : this.gameObject;
 
-            if (!shooterObject.activeSelf || !shooterObject.activeInHierarchy)
+            if (shooterInstance == null)
             {
-                Debug.LogWarning("シューターが非アクティブです！");
+                Debug.LogWarning("シューターがいません！");
                 return;
             }
 
             // 弾の位置と速度の計算
-            Vector2 cursorPos = this.cursor.ReadValue<Vector2>();
-            Vector2 shooterPos = shooterObject.transform.position;
-            Vector2 aimPos = Camera.main ? Camera.main.ScreenToWorldPoint(new Vector3(cursorPos.x, cursorPos.y, 0F)) : shooterPos;
+            Vector2 cursorPos = this.cursor != null ? this.cursor.ReadValue<Vector2>() : new();
+            Vector2 shooterPos = shooterInstance.transform.position;
+            Vector2 aimPos = UnityEngine.Camera.main != null ? UnityEngine.Camera.main.ScreenToWorldPoint(new UnityEngine.Vector3(cursorPos.x, cursorPos.y, 0.0F)) : shooterPos;
             Vector2 aimDir = Vector2.Normalize(new Vector2(aimPos.x, aimPos.y) - new Vector2(shooterPos.x, shooterPos.y));
 
             // 弾を射撃
