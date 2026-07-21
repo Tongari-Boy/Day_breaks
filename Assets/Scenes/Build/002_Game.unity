@@ -820,18 +820,12 @@ MonoBehaviour:
   - spawnTime: 0
     spawnPosition: {x: 0, y: -2}
     enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
-  - spawnTime: 0
+  - spawnTime: 5
     spawnPosition: {x: 2, y: 2}
     enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
-  - spawnTime: 0
+  - spawnTime: 10
     spawnPosition: {x: 2, y: 2}
     enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
-  - spawnTime: 0
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: fac771542d20f5f499dc339ca7b6137b, type: 3}
-  - spawnTime: 0
-    spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
   enemyManager: {fileID: 1969045256}
 --- !u!4 &643085152
 Transform:
@@ -1172,7 +1166,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.Item.ItemDropSpawner
   playerItemObject: {fileID: 6083902087670025328, guid: de76d991802c9664ebe141130ebf2597, type: 3}
-  playerItemSprites: []
+  playerItemSprites:
+  - id: stop_decoy_fortress_regenerator
+    sprite: {fileID: -5351809444007337024, guid: be64057e6a9dd6345971b382030ee28c, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - id: candle_decoy_fortress_regenerator
+    sprite: {fileID: -3166459617859341190, guid: 72328b1663d897341be50e6ba5ed1347, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - id: sword_decoy_fortress_regenerator
+    sprite: {fileID: 1006694621424875969, guid: 709566fb8a302044ca2751e0a7902b77, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &785514677
 Transform:
   m_ObjectHideFlags: 0
