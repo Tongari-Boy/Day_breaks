@@ -40,6 +40,11 @@ namespace DecoyFortress
             {
                 movement.OnUpdate();
             }
+
+            foreach (var fortress in fortresses)
+            {
+                fortress.OnUpdate();
+            }
         }
 
         /// <summary>

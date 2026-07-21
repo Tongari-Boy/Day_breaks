@@ -54,14 +54,15 @@ namespace DecoyFortress
         /// 
         /// 初期値はNormal
         /// </summary>
-        [SerializeField] private DecoyFortressIDs fotressID = DecoyFortressIDs.Normal;
+        [SerializeField] private DecoyFortressIDs fortressID = DecoyFortressIDs.Normal;
 
         [SerializeField] private DecoyFortressRange range;
         [SerializeField] private float effectRange = 2f;
 
         [SerializeField] private SpriteRenderer fortressSpriteRenderer;
-        [SerializeField] private Sprite beforeBuildSprite;
-        [SerializeField] private Sprite afterBuildSprite;
+        [SerializeField] private GameObject beforeVisual;
+        [SerializeField] private GameObject spritePivot;
+        [SerializeField] private Transform AfterVisual;
 
         /// <summary>
         /// 罠砦の初期化処理
@@ -111,6 +112,14 @@ namespace DecoyFortress
                     fortressUI.SetActive(fortressEnabled);
                 }
             }
+        }
+
+        public void OnUpdate()
+        {
+            if (fortressID == DecoyFortressIDs.Stop) return;
+            if (!fortressEnabled) return;
+
+            UpdateRotation();
         }
 
         /// <summary>
@@ -172,6 +181,7 @@ namespace DecoyFortress
                 fortressUI.SetActive(fortressEnabled);
             }
 
+            ResetRotation();
             UpdateAppearance();
         }
 
@@ -192,7 +202,7 @@ namespace DecoyFortress
         /// <returns>罠砦ID</returns>
         public DecoyFortressIDs GetID()
         {
-            return this.fotressID;
+            return this.fortressID;
         }
 
         /// <summary>
@@ -200,16 +210,29 @@ namespace DecoyFortress
         /// </summary>
         private void UpdateAppearance()
         {
-            if (fortressSpriteRenderer != null)
-            {
-                fortressSpriteRenderer.sprite =
-                    fortressEnabled ? afterBuildSprite : beforeBuildSprite;
-            }
+            beforeVisual.SetActive(!fortressEnabled);
+            spritePivot.SetActive(fortressEnabled);
 
             if (range != null)
             {
                 range.SetRangeVisible(fortressEnabled); 
             }
+        }
+
+        /// <summary>
+        /// sword,candleを回す
+        /// </summary>
+        public void UpdateRotation()
+        {
+            AfterVisual.Rotate(0f, 0f, 50f * Time.deltaTime);
+        }
+
+        /// <summary>
+        /// 回転を元に戻す
+        /// </summary>
+        private void ResetRotation()
+        {
+            AfterVisual.Rotate(0,0,0);
         }
     }
 }
