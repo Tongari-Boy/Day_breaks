@@ -31,6 +31,21 @@ namespace Player.Item
         }
 
         /// <summary>
+        /// アイテムをまとめて登録する
+        /// </summary>
+        public bool Register(params IPlayerItem[] playerItems)
+        {
+            bool isRegisteredAll = true;
+
+            foreach (IPlayerItem playerItem in playerItems)
+            {
+                isRegisteredAll &= this.Register(playerItem);
+            }
+
+            return isRegisteredAll;
+        }
+
+        /// <summary>
         /// アイテムを登録する
         /// </summary>
         public bool Register(IPlayerItem playerItem)
@@ -168,10 +183,17 @@ namespace Player.Item
         /// <summary>
         /// レジストリにアイテムを登録する
         /// </summary>
-        public void Initialize()
+        private void Initialize()
         {
             // アイテムを登録する
-            this.Register(new DecoyFortressRegenerator());
+            this.Register
+            (
+                new NormalDecoyFortressRegenerator(),
+                new StopDecoyFortressRegenerator(),
+                new CandleDecoyFortressRegenerator(),
+                new SwordDecoyFortressRegenerator(),
+                new BombDecoyFortressRegenerator()
+            );
         }
 
         /// <summary>

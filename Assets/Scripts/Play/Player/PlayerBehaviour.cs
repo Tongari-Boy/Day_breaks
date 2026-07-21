@@ -32,6 +32,9 @@ namespace Player
         [Header("プレイヤーの速度（ダッシュ時）")]
         [SerializeField] private float sprintSpeed = 3.0F;
 
+        [Header("プレイヤーの蘇生までのクールダウン（秒）")]
+        [SerializeField] private float resurrectionCooldown = 10.0F;
+
         [Header("シューター")]
         [SerializeField] private GameObject shooterObject;
 
@@ -66,6 +69,7 @@ namespace Player
         [SerializeField] private float usingCooldown = 1.0F;
 
         private int remainingHealth;
+        private float remainingResurrectionCooldown;
         private float remainingShootingCooldown;
         private float remainingUsingCooldown;
         private float remainingSlotAnimation;
@@ -79,7 +83,7 @@ namespace Player
         private InputAction cursor;
         private InputAction scroll;
 
-        private new Rigidbody2D rigidbody2d;
+        private Rigidbody2D rigidbody2d;
         private GameObject shooterInstance;
         private Canvas canvas;
         private GameObject[] slotObjects;
@@ -103,6 +107,14 @@ namespace Player
         public int Health
         {
             get { return this.health; }
+        }
+
+        /// <summary>
+        /// 蘇生までのクールダウン
+        /// </summary>
+        public float RemaningResurrectionCooldown
+        {
+            get { return Mathf.Max(0.0F, this.remainingResurrectionCooldown); }
         }
 
         /// <summary>
@@ -229,6 +241,14 @@ namespace Player
 
                 return step;
             }
+        }
+
+        /// <summary>
+        ///  プレイヤーが操作可能かどうか
+        /// </summary>
+        public bool IsControllable()
+        {
+            return this.remainingResurrectionCooldown <= 0.0F;
         }
 
         /// <summary>
@@ -374,6 +394,14 @@ namespace Player
         public void OnDamaged(int damageAmount)
         {
             this.remainingHealth = Mathf.Clamp(this.remainingHealth - damageAmount, 0, this.health);
+
+            // プレイヤーの死亡（休み）
+            if (this.remainingHealth <= 0)
+            {
+                this.remainingResurrectionCooldown = this.resurrectionCooldown;
+
+                Debug.Log($"プレイヤーが死亡しました…（{this.resurrectionCooldown:0.00} 秒間は行動できません！）");
+            }
         }
 
         public void Awake()
@@ -405,6 +433,7 @@ namespace Player
 
         public void Update()
         {
+            this.Resurrect();
             this.SelectSlot();
             this.Use();
             this.Shoot();
@@ -428,10 +457,34 @@ namespace Player
         }
 
         /// <summary>
+        /// プレイヤーの蘇生
+        /// </summary>
+        private void Resurrect()
+        {
+            if (this.remainingResurrectionCooldown > 0.0F)
+            {
+                this.remainingResurrectionCooldown -= Time.deltaTime;
+
+                return;
+            }
+
+            if (this.remainingHealth <= 0.0F)
+            {
+                this.remainingHealth = this.health;
+
+                Debug.Log("プレイヤーが復活しました！");
+            }
+        }
+
+        /// <summary>
         /// プレイヤーの移動
         /// </summary>
         private void Move()
         {
+            // 操作可能か確認
+            if (!this.IsControllable())
+                return;
+
             // 入力を確認
             if (this.move == null || !this.move.IsPressed())
                 return;
@@ -528,6 +581,10 @@ namespace Player
                 return;
             }
 
+            // 操作可能か確認
+            if (!this.IsControllable())
+                return;
+
             // 入力を確認
             if (this.use == null || !this.use.WasPressedThisFrame())
                 return;
@@ -567,6 +624,10 @@ namespace Player
                 this.remainingShootingCooldown -= Time.deltaTime;
                 return;
             }
+
+            // 操作可能か確認
+            if (!this.IsControllable())
+                return;
 
             // 入力を確認
             if (this.shoot == null)
