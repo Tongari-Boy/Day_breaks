@@ -11,6 +11,6 @@ namespace Player
             get { return null; }
         }
 
-        public void OnDamaged(int damageAmount) { }
+        public void OnDamaged(float damageAmount) { }
     }
 }

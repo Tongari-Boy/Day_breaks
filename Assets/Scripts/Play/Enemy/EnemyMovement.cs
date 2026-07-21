@@ -19,22 +19,48 @@ namespace Enemy
         }
 
         /// <summary>
+        /// 敵の種類を定義
+        /// 
+        /// 種類に応じたアイテムを落とす
+        /// </summary>
+        public enum EnemyIDs
+        {
+            Normal,
+            Speed,      // Normalの1.5倍のスピード
+            Powerful,   // Normalの1.5倍の攻撃力
+            Large,      // でかい
+            Blinded     // デモ:透明になる
+        }
+
+        /// <summary>
+        /// 敵の種別
+        /// 
+        /// デフォルトはNormal
+        /// </summary>
+        [Header("種別")]
+        [SerializeField] EnemyIDs enemyID = EnemyIDs.Normal;
+
+        /// <summary>
         /// 敵のHP
         /// </summary>
-        [Header("敵のHP")]
-        [SerializeField] private int enemyHP = 100;
-
+        private int enemyHP = 3;
+        
         /// <summary>
         /// 敵の移動速度
         /// </summary>
-        [Header("敵の移動速度")]
-        [SerializeField] private float enemySpeed = 5f;
+        private float enemySpeed = 1f;
 
         /// <summary>
         /// 敵が与えるダメージ量
+        /// 
+        /// 城の最大体力(100)の5%
         /// </summary>
-        [Header("敵が与えるダメージ量")]
-        [SerializeField] private int enemyDamage = 10;
+        private float  enemyDamage = 5;
+
+        /// <summary>
+        /// 敵の攻撃頻度(クールダウン)
+        /// </summary>
+        private float enemyCoolDown = 1f;
 
         /// <summary>
         /// 敵の攻撃範囲
@@ -44,12 +70,6 @@ namespace Enemy
 
         [Header("敵の追跡から止まるまでの範囲(攻撃範囲以下にしないと正常に動作しません)")]
         [SerializeField] private float enemyChasingRange = 1f;
-
-        /// <summary>
-        /// 敵の攻撃頻度(クールダウン)
-        /// </summary>
-        [Header("敵の攻撃頻度(クールダウン)")]
-        [SerializeField] private float enemyCoolDown = 2f;
 
         [Header("自身のコリダーの判定")]
         [SerializeField] private float selfRadius = 10f;
@@ -75,6 +95,31 @@ namespace Enemy
 
         public void Initialize()
         {
+            // 種別に応じたステータスに変更
+            switch(enemyID)
+            {
+                case EnemyIDs.Normal:
+                    break;
+                case EnemyIDs.Speed:
+                    enemySpeed *= 1.5f;
+                    break;
+                case EnemyIDs.Powerful:
+                    enemyHP = 4;
+                    enemyDamage *= 1.5f;
+                    enemyAttackRange = 0.8f;
+                    break;
+                case EnemyIDs.Large:
+                    enemyHP = 25;
+                    enemyDamage = 7.5f;
+                    enemyDamage = 5;
+                    break;
+                case EnemyIDs.Blinded:
+                    enemyHP = 2;
+                    enemyDamage *= 0.8f;
+                    enemySpeed *= 0.8f;
+                    break;
+            }
+
             var hitboxMarker = GetComponentInChildren<HitboxMarker>();
 
             if (hitboxMarker == null) return;
@@ -287,8 +332,19 @@ namespace Enemy
             else
             {
                 enemyHP = 0;
-                // アイテムの生成
-                ItemDropSpawner.INSTANCE.Drop("decoy_fortress_regenerator", transform.position);
+                // 種別に応じたアイテムの生成
+                switch(enemyID)
+                {
+                    case EnemyIDs.Normal:
+                        ItemDropSpawner.INSTANCE.Drop("candle_decoy_fortress_regenerator", transform.position);
+                        break;
+                    case EnemyIDs.Speed:
+                        ItemDropSpawner.INSTANCE.Drop("stop_decoy_fortress_regenerator", transform.position);
+                        break;
+                    case EnemyIDs.Powerful:
+                        ItemDropSpawner.INSTANCE.Drop("sword_decoy_fortress_regenerator", transform.position);
+                        break;
+                }
                 Destroy(gameObject);
             }
         }

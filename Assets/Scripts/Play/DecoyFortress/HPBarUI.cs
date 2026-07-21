@@ -11,7 +11,7 @@ namespace UI
     {
         [SerializeField] private Slider hpSlider;
 
-        public void SetUp(int maxHP, int currentHP)
+        public void SetUp(float maxHP, float currentHP)
         {
             if (hpSlider == null) hpSlider = GetComponentInChildren<Slider>();
 
@@ -22,7 +22,7 @@ namespace UI
             }
         }
 
-        public void UpdateHP(int currentHP)
+        public void UpdateHP(float currentHP)
         {
             if (hpSlider != null)
             {

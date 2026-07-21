@@ -27,12 +27,12 @@ namespace DecoyFortress
         /// <summary>
         /// 罠砦のHP
         /// </summary>
-        private int fortressHP = 50;
+        private float fortressHP = 50;
 
         /// <summary>
         /// 罠砦の最大HP
         /// </summary>
-        private int FortressMaxHP = 50;
+        private float FortressMaxHP = 50;
 
         /// <summary>
         /// 罠砦が有効化どうか
@@ -102,7 +102,7 @@ namespace DecoyFortress
         /// 
         /// </summary>
         /// <param name="damageAmount">受けたダメージ量</param>
-        public void OnDamaged(int damageAmount)
+        public void OnDamaged(float damageAmount)
         {
             if (fortressHP - damageAmount <= 0)
             {

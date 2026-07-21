@@ -21,7 +21,7 @@ namespace Player
         [SerializeField] private bool cameraFollowingMode = false;
 
         [Header("プレイヤーの体力")]
-        [SerializeField] private int health = 100;
+        [SerializeField] private float health = 100;
 
         [Header("プレイヤーの攻撃力")]
         [SerializeField] private int attackDamage = 50;
@@ -68,7 +68,7 @@ namespace Player
         [Header("アイテム使用後のクールダウン（秒）")]
         [SerializeField] private float usingCooldown = 1.0F;
 
-        private int remainingHealth;
+        private float remainingHealth;
         private float remainingResurrectionCooldown;
         private float remainingShootingCooldown;
         private float remainingUsingCooldown;
@@ -96,7 +96,7 @@ namespace Player
         /// <summary>
         /// プレイヤーの体力（残り）
         /// </summary>
-        public int RemainingHealth
+        public float RemainingHealth
         {
             get { return this.remainingHealth; }
         }
@@ -104,7 +104,7 @@ namespace Player
         /// <summary>
         /// プレイヤーの体力（最大）
         /// </summary>
-        public int Health
+        public float Health
         {
             get { return this.health; }
         }
@@ -391,7 +391,7 @@ namespace Player
         /// <summary>
         /// IDamageableより実装
         /// </summary>
-        public void OnDamaged(int damageAmount)
+        public void OnDamaged(float damageAmount)
         {
             this.remainingHealth = Mathf.Clamp(this.remainingHealth - damageAmount, 0, this.health);
 

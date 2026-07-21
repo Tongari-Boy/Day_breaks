@@ -13,7 +13,7 @@ public interface IDamageable
     /// ダメージを受けた時の処理
     /// </summary>
     /// <param name="damageAmount">受けたダメージ量</param>
-    void OnDamaged(int damageAmount);
+    void OnDamaged(float damageAmount);
 }
 
 /// <summary>

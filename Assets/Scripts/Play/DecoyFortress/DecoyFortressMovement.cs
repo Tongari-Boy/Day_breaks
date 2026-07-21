@@ -27,8 +27,7 @@ namespace DecoyFortress
 
             switch (setting.GetID())
             {
-                case DecoyFortressSetting.DecoyFortressIDs.Normal:
-                    break;
+
                 case DecoyFortressSetting.DecoyFortressIDs.Stop:
 
                     break;
@@ -38,10 +37,16 @@ namespace DecoyFortress
                 case DecoyFortressSetting.DecoyFortressIDs.Sword:
 
                     break;
-                case DecoyFortressSetting.DecoyFortressIDs.Bomb:
-
-                    break;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount">攻撃力</param>
+        private void Attack(float amount)
+        {
+
         }
     }
 }
