@@ -44,9 +44,11 @@ namespace DecoyFortress
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log("Trigger Enter: " + other.name); // ← 追加
+            // HitBoxMarkerのついたコリダーなら無視
+            if (other.GetComponent<HitboxMarker>() == null) return;
 
-            var enemy = other.GetComponent<EnemyMovement>();
+            Debug.Log("Trigger Enter: " + other.name);
+            var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null && !enemiesInRange.Contains(enemy))
             {
                 enemiesInRange.Add(enemy);
@@ -55,7 +57,8 @@ namespace DecoyFortress
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            var enemy = other.GetComponent<EnemyMovement>();
+            Debug.Log("Trigger Exit: " + other.name);
+            var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null)
             {
                 enemiesInRange.Remove(enemy);
@@ -64,8 +67,11 @@ namespace DecoyFortress
 
         public IReadOnlyList<EnemyMovement> GetEnemiesInRange()
         {
-            // Destroyされた敵などを除去してから返す
-            enemiesInRange.RemoveAll(e => e == null);
+            enemiesInRange.RemoveAll(e =>
+                e == null ||
+                !e.gameObject.activeInHierarchy ||
+                Vector2.Distance(e.transform.position, transform.position) > rangeCollider.radius
+            );
             return enemiesInRange;
         }
     }

@@ -671,10 +671,10 @@ MonoBehaviour:
     enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
   - spawnTime: 5
     spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
   - spawnTime: 10
     spawnPosition: {x: 2, y: 2}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
   enemyManager: {fileID: 1969045256}
 --- !u!4 &643085152
 Transform:
@@ -696,7 +696,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3174676222069867307, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
   m_PrefabInstance: {fileID: 791179715810314348}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1999804783}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6538031288ec1ab45ba6da7e9171c2e2, type: 3}
@@ -1638,17 +1638,6 @@ Transform:
   - {fileID: 2108089434}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1647065611 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 790396150534152269, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
-  m_PrefabInstance: {fileID: 791179715810314348}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b002db273495dc4b8e878a137f24ff9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DecoyFortress.DecoyFortressRange
 --- !u!1 &1860219767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2023,24 +2012,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1999804783 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7728433870830482682, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
-  m_PrefabInstance: {fileID: 791179715810314348}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1999804784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1999804783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbcbb60416802564ab7f898ae225cb14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DecoyFortress.DecoyFortressMovement
-  range: {fileID: 1647065611}
 --- !u!1 &2092329735
 GameObject:
   m_ObjectHideFlags: 0
@@ -2235,6 +2206,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1112293070}
     m_Modifications:
+    - target: {fileID: 1076678317449068844, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
+      propertyPath: m_Radius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3174676222069867307, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
+      propertyPath: effectRange
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3174676222069867307, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
       propertyPath: fortressEnabled
       value: 1
@@ -2289,10 +2268,7 @@ PrefabInstance:
     - {fileID: 8828112142354097705, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7728433870830482682, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1999804784}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93e9c00f98116dd4bbeb1b8cbd1e8217, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

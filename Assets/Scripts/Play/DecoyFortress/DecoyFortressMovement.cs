@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace DecoyFortress
@@ -35,7 +36,6 @@ namespace DecoyFortress
                     SpeedDown();
                     break;
                 case DecoyFortressSetting.DecoyFortressIDs.Candle:
-                    Debug.Log("アヒージョ");
                     Attack(2);
                     break;
                 case DecoyFortressSetting.DecoyFortressIDs.Sword:
@@ -52,8 +52,12 @@ namespace DecoyFortress
         /// <param name="amount">攻撃力</param>
         private void Attack(int amount)
         {
-            foreach (var enemy in range.GetEnemiesInRange())
+            // ToListで複製してから回すことで、
+            // 元のリストの変更による影響を受けない
+            var targets = range.GetEnemiesInRange().ToList();
+            foreach (var enemy in targets)
             {
+                Debug.Log($"攻撃対象: {enemy.name} / 位置: {enemy.transform.position} / 罠砦位置: {transform.position}");
                 enemy.OnDamagedByPlayer(amount);
             }
         }
@@ -65,7 +69,7 @@ namespace DecoyFortress
         /// </summary>
         private void SpeedDown()
         {
-            foreach (var enemy in range.GetEnemiesInRange())
+            foreach (var enemy in range.GetEnemiesInRange().ToList())
             {
                 enemy.ApplySlow();
             }
