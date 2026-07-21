@@ -26,7 +26,7 @@ namespace Play
         [SerializeField] private GameTimer gameTimer;
 
         [Header("ゲーム中フラグ")]
-        private bool gaming = false;
+        [SerializeField] private bool gaming = false;
 
         void Awake()
         {
@@ -53,6 +53,10 @@ namespace Play
                 enemySpawner.OnUpdate();
                 gameTimer.OnUpdate();
                 decoyFortressManager.OnUpdate();
+
+                // 城の透明度適応
+                float alpha = gameTimer.GetTimeRate();
+                castleManager.SetAlpha(alpha);
             }
         }
 

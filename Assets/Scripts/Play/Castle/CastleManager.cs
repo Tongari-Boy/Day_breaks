@@ -14,6 +14,9 @@ namespace Castle
         [Header("城のUI")]
         [SerializeField] private CastleUI castleUI;
 
+        [Header("城のマスク")]
+        [SerializeField] private SpriteRenderer castleSpriteRenderer;
+
         /// <summary>
         /// 城のHP
         /// 
@@ -64,5 +67,15 @@ namespace Castle
             }
         }
 
+        /// <summary>
+        /// マスク部分の透明度の適応
+        /// </summary>
+        /// <param name="alpha"></param>
+        public void SetAlpha(float alpha)
+        {
+            Color color = castleSpriteRenderer.color;
+            color.a = alpha;
+            castleSpriteRenderer.color = color;
+        }
     }
 }

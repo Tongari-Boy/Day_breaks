@@ -85,4 +85,13 @@ public class GameTimer : MonoBehaviour
         timerText.text = "00:00";
         gameManager.GameClear();
     }
+
+    /// <summary>
+    /// 城の透明度の設定に使う
+    /// </summary>
+    /// <returns>残り時間の割合</returns>
+    public float GetTimeRate()
+    {
+        return Mathf.Clamp01(timer / MaxTime);
+    }
 }
