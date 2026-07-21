@@ -92,10 +92,10 @@ namespace Player.Item
         {
             if (id != null && id != "" && this.playerItems.ContainsKey(id))
             {
-                return this.playerItems[id];
+                return this.playerItems[id] ?? PlayerItemHolder.EMPTY;
             }
 
-            return null;
+            return PlayerItemHolder.EMPTY;
         }
 
         /// <summary>
@@ -168,16 +168,16 @@ namespace Player.Item
 
         /// <summary>
         /// <para>登録されたSpriteを取得する</para>
-        /// <para>存在しない場合はnull</para>
+        /// <para>存在しない場合はPlayerItemSpriteHolder.EMPTYを返す</para>
         /// </summary>
         public PlayerItemSpriteHolder GetSprite(string id)
         {
             if (id != null && id != "" && this.playerItemSprites.ContainsKey(id))
             {
-                return this.playerItemSprites[id];
+                return this.playerItemSprites[id] ?? PlayerItemSpriteHolder.EMPTY;
             }
 
-            return null;
+            return PlayerItemSpriteHolder.EMPTY;
         }
 
         /// <summary>
@@ -201,14 +201,33 @@ namespace Player.Item
         /// </summary>
         public class PlayerItemHolder
         {
-            /// <summary>
-            /// アイテム
-            /// </summary>
+            public static readonly PlayerItemHolder EMPTY = new(null);
+
             public readonly IPlayerItem playerItem;
 
             public PlayerItemHolder(IPlayerItem playerItem)  
             {
                 this.playerItem = playerItem;
+            }
+
+            public string Id
+            {
+                get { return this.playerItem != null ? this.playerItem.Id ?? "none" : "none"; }
+            }
+
+            public string Name
+            {
+                get { return this.playerItem != null ? this.playerItem.Name ?? "None" : "None"; }
+            }
+
+            public int Cost
+            {
+                get { return this.playerItem != null ? this.playerItem.Cost : 0; }
+            }
+
+            public Sprite Sprite
+            {
+                get { return this.playerItem != null ? this.playerItem.Sprite : null; }
             }
         }
 
@@ -217,14 +236,10 @@ namespace Player.Item
         /// </summary>
         public class PlayerItemSpriteHolder
         {
-            /// <summary>
-            /// スプライト
-            /// </summary>
+            public static readonly PlayerItemSpriteHolder EMPTY = new(null, Color.white);
+
             public readonly Sprite sprite;
 
-            /// <summary>
-            /// スプライトの色
-            /// </summary>
             public readonly Color color;
 
             public PlayerItemSpriteHolder(Sprite sprite, Color color)
