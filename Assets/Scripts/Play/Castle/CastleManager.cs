@@ -20,13 +20,13 @@ namespace Castle
         /// 初期値は城の最大値とします
         /// </summary>
         [Header("城のHP(ゲームスタート時に最大値で上書きされるため、変更しても意味はありません)")]
-        [SerializeField] private int castleHP = 100;
+        [SerializeField] private float castleHP = 100;
 
         /// <summary>
         /// 城の最大HP
         /// </summary>
         [Header("城の最大HP")]
-        [SerializeField] private int CastleMaxHP = 100;
+        [SerializeField] private float CastleMaxHP = 100;
 
         public void Initialize(GameManager gameManager)
         {
@@ -47,7 +47,7 @@ namespace Castle
         /// 
         /// <param name = "damageAmount">受けたダメージ量</param>
         /// </summary>
-        public void OnDamaged(int damageAmount)
+        public void OnDamaged(float damageAmount)
         {
             if (castleHP - damageAmount <= 0)
             {
