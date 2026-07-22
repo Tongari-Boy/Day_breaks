@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: af7ea02f09f05cb408ceda274b662a1a
+guid: 3267c2b6339dddb41b610a7d601f182f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1898811598795931168
-    second: the_moon_0
-  - first:
-      213: -2172359786296545961
-    second: the_moon_1
+      213: -5405174190311030136
+    second: the_sun_sleep_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: the_moon_0
+      name: the_sun_sleep_0
       rect:
         serializedVersion: 2
-        x: 101
-        y: 678
-        width: 6
-        height: 10
+        x: 95
+        y: 21
+        width: 810
+        height: 883
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0e1806649e016a5e0800000000000000
-      internalID: -1898811598795931168
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: the_moon_1
-      rect:
-        serializedVersion: 2
-        x: 103
-        y: 66
-        width: 796
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 75d6375b84a3ad1e0800000000000000
-      internalID: -2172359786296545961
+      spriteID: 882c66536b6fcf4b0800000000000000
+      internalID: -5405174190311030136
       vertices: []
       indices: 
       edges: []
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      the_moon_0: -1898811598795931168
-      the_moon_1: -2172359786296545961
+      the_sun_sleep_0: -5405174190311030136
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

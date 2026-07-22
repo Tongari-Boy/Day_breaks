@@ -187,7 +187,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1898811598795931168, guid: b4dc4b7a05b7027499069877f7f2ace2, type: 3}
+  m_Sprite: {fileID: -2172359786296545961, guid: af7ea02f09f05cb408ceda274b662a1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -307,6 +307,7 @@ MonoBehaviour:
   attackDamage: 50
   movementSpeed: 1
   sprintSpeed: 3
+  resurrectionCooldown: 10
   shooterObject: {fileID: 5636046157989483241, guid: 6fb49f7e3b50b4f4d91e5a9686442af3, type: 3}
   bulletObject: {fileID: 748792875100894902, guid: 0d37ed35a9917d24fb4feedfd61b0963, type: 3}
   bulletSpeed: 5
@@ -328,3 +329,7 @@ MonoBehaviour:
   - id: 
     count: 0
   usingCooldown: 0
+  playerUIManager:
+    slotSprite: {fileID: 0}
+    slotColor: {r: 0, g: 0, b: 0, a: 0}
+    displaySlotAmount: 9

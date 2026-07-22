@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 709566fb8a302044ca2751e0a7902b77
+guid: 98b6d3d3fb93c0b4081af49f61f8cb58
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -103,10 +103,10 @@ TextureImporter:
       name: the_sun_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 36
-        width: 766
-        height: 735
+        x: 95
+        y: 96
+        width: 810
+        height: 843
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
