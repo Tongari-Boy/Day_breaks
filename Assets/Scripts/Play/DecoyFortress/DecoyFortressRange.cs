@@ -31,17 +31,17 @@ namespace DecoyFortress
         /// 見た目のスプライトに反映させる
         /// </summary>
         /// <param name="radius"></param>
-        public void SetRadius(float radius)
-        {
-            rangeCollider.radius = radius;
+        //public void SetRadius(float radius)
+        //{
+        //    rangeCollider.radius = radius;
 
-            if(rangeSprite != null)
-            {
-                // スプライトが直径1のcircle前提の処理
-                float diameter = radius * 2f;
-                rangeSprite.transform.localScale = new Vector3(diameter, diameter, 1f);
-            }
-        }
+        //    if(rangeSprite != null)
+        //    {
+        //        // スプライトが直径1のcircle前提の処理
+        //        float diameter = radius * 2f;
+        //        rangeSprite.transform.localScale = new Vector3(diameter, diameter, 1f);
+        //    }
+        //}
 
         private void OnTriggerEnter2D(Collider2D other)
         {

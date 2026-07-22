@@ -1,6 +1,5 @@
 using Castle;
 using Enemy;
-using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

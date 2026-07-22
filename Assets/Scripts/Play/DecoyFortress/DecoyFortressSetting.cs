@@ -73,10 +73,10 @@ namespace DecoyFortress
         {
             fortressHP = FortressMaxHP;
 
-            if(range != null)
-            {
-                range.SetRadius(effectRange);
-            }
+            //if(range != null)
+            //{
+            //    range.SetRadius(effectRange);
+            //}
 
             // 有効フラグの状態に合わせてUIを動的生成・初期化
             HandleUIInitialization();
