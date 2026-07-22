@@ -14,6 +14,7 @@ namespace DecoyFortress
     public class DecoyFortressRange : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer rangeSprite;
+        [SerializeField] private float exitMargin = 0.3f;
 
         private readonly List<EnemyMovement> enemiesInRange = new List<EnemyMovement>();
 
@@ -46,9 +47,19 @@ namespace DecoyFortress
         {
             // HitBoxMarkerのついたコリダーなら無視
             if (other.GetComponent<HitboxMarker>() == null) return;
+            Debug.Log($"other = {other.name}");
 
-            Debug.Log("Trigger Enter: " + other.name);
+            Debug.Log($"other collider = {other}");
+
+            var hitbox = other.GetComponent<HitboxMarker>();
+
+            Debug.Log($"hitbox = {hitbox}");
+
             var enemy = other.GetComponentInParent<EnemyMovement>();
+
+            Debug.Log($"enemy = {enemy}");
+
+            // var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null && !enemiesInRange.Contains(enemy))
             {
                 enemiesInRange.Add(enemy);
@@ -57,10 +68,11 @@ namespace DecoyFortress
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            Debug.Log("Trigger Exit: " + other.name);
+            Debug.Log($"Exit : {other.name}");
             var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null)
             {
+                Debug.Log($"Remove : {enemy.name}");
                 enemiesInRange.Remove(enemy);
             }
         }
@@ -74,14 +86,17 @@ namespace DecoyFortress
                     $"敵座標:{e.transform.position}" +
                     $"Range座標:{transform.position}" +
                     $"距離:{Vector2.Distance(e.transform.position,transform.position)}" +
-                    $"半径":{rangeCollider.radius}"
+                    $"半径:{rangeCollider.radius}"
                 );
             }
-            
+
+            // radiusぴったりではなく、+exitMarginの範囲まで許容してから除外する
+            float exitThreshold = rangeCollider.radius + exitMargin;
+
             enemiesInRange.RemoveAll(e =>
                 e == null ||
                 !e.gameObject.activeInHierarchy ||
-                Vector2.Distance(e.transform.position, transform.position) > rangeCollider.radius
+                Vector2.Distance(e.transform.position, transform.position) > exitThreshold
             );
             return enemiesInRange;
         }
