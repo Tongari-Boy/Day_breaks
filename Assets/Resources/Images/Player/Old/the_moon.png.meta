@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: af7ea02f09f05cb408ceda274b662a1a
+guid: b4dc4b7a05b7027499069877f7f2ace2
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: -1898811598795931168
     second: the_moon_0
-  - first:
-      213: -2172359786296545961
-    second: the_moon_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,10 +103,10 @@ TextureImporter:
       name: the_moon_0
       rect:
         serializedVersion: 2
-        x: 101
-        y: 678
-        width: 6
-        height: 10
+        x: 70
+        y: 70
+        width: 660
+        height: 659
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,28 +117,6 @@ TextureImporter:
       bones: []
       spriteID: 0e1806649e016a5e0800000000000000
       internalID: -1898811598795931168
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: the_moon_1
-      rect:
-        serializedVersion: 2
-        x: 103
-        y: 66
-        width: 796
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 75d6375b84a3ad1e0800000000000000
-      internalID: -2172359786296545961
       vertices: []
       indices: 
       edges: []
@@ -161,7 +136,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       the_moon_0: -1898811598795931168
-      the_moon_1: -2172359786296545961
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
