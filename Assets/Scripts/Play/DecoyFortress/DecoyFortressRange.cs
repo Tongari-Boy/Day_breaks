@@ -14,6 +14,7 @@ namespace DecoyFortress
     public class DecoyFortressRange : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer rangeSprite;
+        // [SerializeField] private float exitMargin = 0.3f;
 
         private readonly List<EnemyMovement> enemiesInRange = new List<EnemyMovement>();
 
@@ -47,8 +48,13 @@ namespace DecoyFortress
             // HitBoxMarkerのついたコリダーなら無視
             if (other.GetComponent<HitboxMarker>() == null) return;
 
-            Debug.Log("Trigger Enter: " + other.name);
+            var hitbox = other.GetComponent<HitboxMarker>();
+
+
             var enemy = other.GetComponentInParent<EnemyMovement>();
+
+
+            // var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null && !enemiesInRange.Contains(enemy))
             {
                 enemiesInRange.Add(enemy);
@@ -57,21 +63,36 @@ namespace DecoyFortress
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            Debug.Log("Trigger Exit: " + other.name);
+            Debug.Log($"Exit : {other.name}");
             var enemy = other.GetComponentInParent<EnemyMovement>();
             if (enemy != null)
             {
+                Debug.Log($"Remove : {enemy.name}");
                 enemiesInRange.Remove(enemy);
             }
         }
 
         public IReadOnlyList<EnemyMovement> GetEnemiesInRange()
         {
-            enemiesInRange.RemoveAll(e =>
-                e == null ||
-                !e.gameObject.activeInHierarchy ||
-                Vector2.Distance(e.transform.position, transform.position) > rangeCollider.radius
-            );
+            //foreach(var e in enemiesInRange)
+            //{
+            //    Debug.Log(
+            //        $"敵:{e.name}" +
+            //        $"敵座標:{e.transform.position}" +
+            //        $"Range座標:{transform.position}" +
+            //        $"距離:{Vector2.Distance(e.transform.position,transform.position)}" +
+            //        $"半径:{rangeCollider.radius}"
+            //    );
+            //}
+
+            //// radiusぴったりではなく、+exitMarginの範囲まで許容してから除外する
+            //float exitThreshold = rangeCollider.radius + exitMargin;
+
+            //enemiesInRange.RemoveAll(e =>
+            //    e == null ||
+            //    !e.gameObject.activeInHierarchy ||
+            //    Vector2.Distance(e.transform.position, transform.position) > exitThreshold
+            //);
             return enemiesInRange;
         }
 

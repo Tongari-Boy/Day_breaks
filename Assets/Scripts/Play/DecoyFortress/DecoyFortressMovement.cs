@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ namespace DecoyFortress
         /// </summary>
         private DecoyFortressSetting setting;
 
+        private float attackTimer = 0f;
+        [SerializeField] private float fortressCoolDown = 2f;
+
         private void Awake()
         {
             setting = GetComponent<DecoyFortressSetting>();
@@ -31,7 +35,6 @@ namespace DecoyFortress
 
             switch (setting.GetID())
             {
-
                 case DecoyFortressSetting.DecoyFortressIDs.Stop:
                     SpeedDown();
                     break;
@@ -57,8 +60,15 @@ namespace DecoyFortress
             var targets = range.GetEnemiesInRange().ToList();
             foreach (var enemy in targets)
             {
-                Debug.Log($"攻撃対象: {enemy.name} / 位置: {enemy.transform.position} / 罠砦位置: {transform.position}");
-                enemy.OnDamagedByPlayer(amount);
+                // タイマー処理
+                attackTimer += Time.deltaTime;
+
+                if(attackTimer > fortressCoolDown)
+                {
+                    Debug.Log($"攻撃対象: {enemy.name} / 位置: {enemy.transform.position} / 罠砦位置: {transform.position}");
+                    enemy.OnDamagedByPlayer(amount);
+                    attackTimer = 0f;
+                }
             }
         }
 
@@ -73,6 +83,6 @@ namespace DecoyFortress
             {
                 enemy.ApplySlow();
             }
-        }
+         }
     }
 }
