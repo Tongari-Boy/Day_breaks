@@ -67,6 +67,17 @@ namespace DecoyFortress
 
         public IReadOnlyList<EnemyMovement> GetEnemiesInRange()
         {
+            foreach(var e in enemiesInRange)
+            {
+                Debug.Log(
+                    $"敵:{e.name}" +
+                    $"敵座標:{e.transform.position}" +
+                    $"Range座標:{transform.position}" +
+                    $"距離:{Vector2.Distance(e.transform.position,transform.position)}" +
+                    $"半径":{rangeCollider.radius}"
+                );
+            }
+            
             enemiesInRange.RemoveAll(e =>
                 e == null ||
                 !e.gameObject.activeInHierarchy ||
