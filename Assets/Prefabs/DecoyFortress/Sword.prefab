@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8955638261879240795, guid: ad4e0a8c471cce146a0074e48e273ebc, type: 3}
+  m_Sprite: {fileID: -1592909544050637166, guid: ec0241ca89421f446a659cccab63df13, type: 3}
   m_Color: {r: 0.99371064, g: 0.99371064, b: 0.99371064, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -144,7 +144,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.1, y: 10.05}
+    oldSize: {x: 10.12, y: 10.07}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
@@ -402,7 +402,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8293528956672030656, guid: 81fba3a62e6c7964cb28754fa004b6e9, type: 3}
+  m_Sprite: {fileID: 712035800519618848, guid: 72f1dbd6e5fa47b44a22285e1bc817e3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -483,6 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DecoyFortress.DecoyFortressMovement
   range: {fileID: 363183416960048421}
+  fortressCoolDown: 2
 --- !u!1 &8027532980271998778
 GameObject:
   m_ObjectHideFlags: 0

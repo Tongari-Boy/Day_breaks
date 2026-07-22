@@ -47,11 +47,11 @@ MonoBehaviour:
   playerItemObject: {fileID: 6083902087670025328, guid: de76d991802c9664ebe141130ebf2597, type: 3}
   playerItemSprites:
   - id: stop_decoy_fortress_regenerator
-    sprite: {fileID: -2213614127467455398, guid: 724eae45df9532a469b2b55b0da2ab70, type: 3}
+    sprite: {fileID: -5073118132674453653, guid: 4ab6349623bec494194b2fd0854f4995, type: 3}
     color: {r: 1, g: 1, b: 1, a: 1}
   - id: candle_decoy_fortress_regenerator
-    sprite: {fileID: 2231246567514443594, guid: a83851f27bf5b1644a6ee1b036850a96, type: 3}
+    sprite: {fileID: 8336658040463831959, guid: 3f3c54fc60de6b947bfa24b9b7356f8e, type: 3}
     color: {r: 1, g: 1, b: 1, a: 1}
   - id: sword_decoy_fortress_regenerator
-    sprite: {fileID: 6094101117428662648, guid: 91ee753083cd712428f67a1523249229, type: 3}
+    sprite: {fileID: -8204418864819610292, guid: 94145d119ce0ad6479a0d7877bd1775c, type: 3}
     color: {r: 1, g: 1, b: 1, a: 1}

@@ -108,6 +108,7 @@ namespace Enemy
                 case EnemyIDs.Normal:
                     break;
                 case EnemyIDs.Speed:
+                    enemyHP = 1;
                     enemySpeed *= 1.5f;
                     break;
                 case EnemyIDs.Powerful:
@@ -371,6 +372,15 @@ namespace Enemy
         public void ApplySlow()
         {
             enemySpeed *= 0.8f;
+        }
+
+        
+        /// <summary>
+        /// 罠砦の鈍足化効果による移動速度の元に戻る処理
+        /// </summary>
+        public void ApplyQuick()
+        {
+            enemySpeed *= 1.2f;
         }
 
         /// <summary>
