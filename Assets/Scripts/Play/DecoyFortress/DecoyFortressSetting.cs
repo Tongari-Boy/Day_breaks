@@ -210,7 +210,7 @@ namespace DecoyFortress
         /// </summary>
         private void UpdateAppearance()
         {
-            beforeVisual.SetActive(!fortressEnabled);
+            //beforeVisual.SetActive(!fortressEnabled);
             spritePivot.SetActive(fortressEnabled);
 
             if (range != null)

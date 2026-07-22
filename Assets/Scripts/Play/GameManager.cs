@@ -55,8 +55,8 @@ namespace Play
 
                 // 城の透明度適応
                 float rate = gameTimer.GetTimeRate();
-                // 残り30%から急に消え始める
-                float alpha = Mathf.InverseLerp(0f, 0.3f, rate);
+                // 残り15%から消え始める
+                float alpha = Mathf.InverseLerp(0f, 0.15f, rate);
                 castleManager.SetAlpha(alpha);
             }
         }
