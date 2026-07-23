@@ -234,6 +234,8 @@ namespace Player
         /// </summary>
         private void UpdatePlayerHealthBar()
         {
+            this.healthBarHolder.gameObject?.SetActive(false);
+
             if (this.playerBehaviour == null || !this.playerBehaviour.enabled)
                 return;
 
@@ -245,6 +247,8 @@ namespace Player
 
             if (!this.hasHealthBar || Camera.main == null || !Camera.main.enabled)
                 return;
+
+            this.healthBarHolder.gameObject?.SetActive(true);
 
             // 体力バーを移動
             RectTransform backgroundTransform = this.healthBarHolder.rectTransform;
@@ -269,6 +273,8 @@ namespace Player
         /// </summary>
         private void UpdatePlayerItemSlots(float width = 64.0F)
         {
+            this.slotUIHolder.gameObject?.SetActive(false);
+
             if (this.playerBehaviour == null || !this.playerBehaviour.enabled)
                 return;
 
@@ -277,6 +283,8 @@ namespace Player
 
             if (this.slotUIHolder == null || this.slotUIHolder.gameObject == null || this.slotHolders == null || this.slotHolders.Length <= 0)
                 return;
+
+            this.slotUIHolder.gameObject?.SetActive(true);
 
             // ループ最適化
             int length = this.slotHolders.Length;
