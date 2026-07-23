@@ -1142,9 +1142,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+      propertyPath: m_Pitch
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: e967f9988b721af479f8443ae5bde6bc, type: 3}
     - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: m_PlayOnAwake
       value: 0

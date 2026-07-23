@@ -4,11 +4,9 @@ using Enemy;
 using Player.Bullet;
 using Player.Item;
 using System.Collections.Generic;
-using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Player
 {
@@ -55,9 +53,6 @@ namespace Player
 
         [Header("連射モード")]
         [SerializeField] private bool holdingShootingMode = true;
-
-        [Header("アイテムスロット")]
-        [SerializeField] private GameObject slotObject;
 
         [Header("アイテムスロットのアニメーション時間（秒）")]
         [SerializeField] private float slotAnimation = 0.5F;
