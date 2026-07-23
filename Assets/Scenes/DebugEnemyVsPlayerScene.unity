@@ -1102,6 +1102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Castle.CastleManager
   castleUI: {fileID: 199674805}
+  castleSpriteRenderer: {fileID: 0}
   castleHP: 100
   CastleMaxHP: 100
 --- !u!4 &891052788
@@ -1140,6 +1141,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1477801114537387161, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4348966504366418591, guid: 4244c79e42ae99d4ebad462679b5ba49, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -1442,6 +1451,13 @@ MonoBehaviour:
   uiPrefab: {fileID: 3452046118694273794, guid: 5610973ae388b36408ba507dbb376287, type: 3}
   uiOffset: {x: 0, y: -0.5, z: 0}
   fortressEnabled: 1
+  fortressID: 0
+  range: {fileID: 0}
+  effectRange: 2
+  fortressSpriteRenderer: {fileID: 0}
+  beforeVisual: {fileID: 0}
+  spritePivot: {fileID: 0}
+  AfterVisual: {fileID: 0}
 --- !u!1 &1033539481
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,6 +1582,7 @@ MonoBehaviour:
   enemySpawner: {fileID: 73155759}
   decoyFortressManager: {fileID: 242431268}
   gameTimer: {fileID: 706542632}
+  gaming: 0
 --- !u!1 &1477371712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,6 +1694,13 @@ MonoBehaviour:
   uiPrefab: {fileID: 3452046118694273794, guid: 5610973ae388b36408ba507dbb376287, type: 3}
   uiOffset: {x: 0, y: -0.5, z: 0}
   fortressEnabled: 1
+  fortressID: 0
+  range: {fileID: 0}
+  effectRange: 2
+  fortressSpriteRenderer: {fileID: 0}
+  beforeVisual: {fileID: 0}
+  spritePivot: {fileID: 0}
+  AfterVisual: {fileID: 0}
 --- !u!4 &1520707038
 Transform:
   m_ObjectHideFlags: 0

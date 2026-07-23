@@ -568,7 +568,7 @@ namespace Player
                 }
             }
 
-            if (this.cursor != null && UnityEngine.Camera.main != null)
+            if (this.cursor != null && UnityEngine.Camera.main != null && UnityEngine.Camera.main.enabled)
             {
                 Vector2 cursorPos = this.cursor.ReadValue<Vector2>();
                 Vector2 shooterPos = UnityEngine.Camera.main.ScreenToWorldPoint(new UnityEngine.Vector3(cursorPos.x, cursorPos.y, 0.0F));
@@ -583,7 +583,7 @@ namespace Player
         /// </summary>
         private void FollowCamera()
         {
-            if (this.cameraFollowingMode && UnityEngine.Camera.main != null)
+            if (this.cameraFollowingMode && UnityEngine.Camera.main != null && UnityEngine.Camera.main.enabled)
             {
                 UnityEngine.Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, UnityEngine.Camera.main.transform.position.z);
             }
@@ -712,7 +712,7 @@ namespace Player
             // 弾の位置と速度の計算
             Vector2 cursorPos = this.cursor != null ? this.cursor.ReadValue<Vector2>() : new();
             Vector2 shooterPos = shooterInstance.transform.position;
-            Vector2 aimPos = UnityEngine.Camera.main != null ? UnityEngine.Camera.main.ScreenToWorldPoint(new UnityEngine.Vector3(cursorPos.x, cursorPos.y, 0.0F)) : shooterPos;
+            Vector2 aimPos = UnityEngine.Camera.main != null && UnityEngine.Camera.main.enabled ? UnityEngine.Camera.main.ScreenToWorldPoint(new UnityEngine.Vector3(cursorPos.x, cursorPos.y, 0.0F)) : shooterPos;
             Vector2 aimDir = Vector2.Normalize(new Vector2(aimPos.x, aimPos.y) - new Vector2(shooterPos.x, shooterPos.y));
 
             // 弾を射撃
@@ -727,6 +727,14 @@ namespace Player
             rigidbody2D.gravityScale = 0.0F;
             bulletBehaviour.AttackDamage = this.attackDamage;
             bulletBehaviour.Duration = this.bulletDuration;
+
+            // サウンドを再生
+            AudioSource shootSound = this.gameObject.GetComponent<AudioSource>();
+
+            if (shootSound != null && shootSound.enabled)
+            {
+                shootSound.Play();
+            }
 
             // クールダウンを設定
             this.remainingShootingCooldown = this.shootingCooldown;

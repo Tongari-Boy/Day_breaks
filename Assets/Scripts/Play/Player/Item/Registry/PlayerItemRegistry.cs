@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
 
 namespace Player.Item
 {
     /// <summary>
-    /// アイテムが登録されるレジストリ
+    /// アイテムのレジストリ
     /// </summary>
     public class PlayerItemRegistry
     {
@@ -62,7 +61,7 @@ namespace Player.Item
 
             try
             {
-                this.playerItems.Add(playerItem.Id, new PlayerItemHolder(playerItem));
+                this.playerItems.Add(playerItem.Id, new(playerItem));
 
                 Debug.Log($"アイテム（ID: {playerItem.Id}）が登録されました！");
 
@@ -86,7 +85,7 @@ namespace Player.Item
 
         /// <summary>
         /// <para>登録されたアイテムを取得する</para>
-        /// <para>存在しない場合はnull</para>
+        /// <para>存在しない場合はPlayerItemHolder.EMPTYを返す</para>
         /// </summary>
         public PlayerItemHolder Get(string id)
         {

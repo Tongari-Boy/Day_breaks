@@ -19,21 +19,24 @@ namespace Player
         [Header("アイテムスロットの色")]
         [SerializeField] private Color slotColor;
 
-        [Header("表示するアイテムスロットの数")]
-        [SerializeField] private int displaySlotAmount = 9;
+        [Header("アイテムスロットの数")]
+        [SerializeField] private int slotAmount = 9;
+
+        [Header("アイテムスロットのオフセット")]
+        [SerializeField] private Vector2 slotOffsets = new(0.0F, 0.0F);
+
+        [Header("体力バーの表示")]
+        [SerializeField] private bool hasHealthBar = true;
+
+        [Header("体力バーのオフセット")]
+        [SerializeField] private Vector2 healthBarOffsets = new(0.0F, -48.0F);
 
         private PlayerBehaviour playerBehaviour;
         private Canvas canvas;
         private RectTransform canvasTransform;
 
-        /// <summary>
-        /// アイテムスロット（親）
-        /// </summary>
-        private UIHolder slotContents;
-
-        /// <summary>
-        /// アイテムスロット（個）
-        /// </summary>
+        private HealthBarHolder healthBarHolder;
+        private UIHolder slotUIHolder;
         private SlotHolder[] slotHolders;
 
         public PlayerUIManager() { }
@@ -41,6 +44,7 @@ namespace Player
         public void Start(PlayerBehaviour playerBehaviour)
         {
             this.GeneratePlayerContexts(playerBehaviour);
+            this.GeneratePlayerHealthBar();
             this.GeneratePlayerItemSlots();
         }
 
@@ -56,6 +60,52 @@ namespace Player
         }
 
         /// <summary>
+        /// 体力バーを生成
+        /// </summary>
+        private void GeneratePlayerHealthBar()
+        {
+            if (this.canvas == null)
+                return;
+
+            // 体力バーのクリア
+            this.DestroyPlayerHealthBar();
+
+            if (this.healthBarHolder == null)
+            {
+                GameObject backgorundObject = new("Health Bar Background");
+                RectTransform backgroundTransform = backgorundObject.AddComponent<RectTransform>();
+                Image backgroundImage = backgorundObject.AddComponent<Image>();
+
+                GameObject contentObject = new("Health Bar Contents");
+                RectTransform contentTransform = contentObject.AddComponent<RectTransform>();
+                Image contentImage = contentObject.AddComponent<Image>();
+
+                backgroundTransform.SetParent(this.canvas.transform);
+                backgroundTransform.anchoredPosition = Vector2.zero;
+                backgroundTransform.sizeDelta = new(80.0F, 3.0F);
+                backgroundImage.color = new(0.0F, 0.0F, 0.0F, 0.5F);
+
+                contentTransform.SetParent(backgroundTransform);
+                contentTransform.anchorMin = contentTransform.anchorMax = new(0.0F, 0.5F);
+                contentTransform.pivot = new(0.0F, 0.5F);
+                contentTransform.anchoredPosition = Vector2.zero;
+                contentTransform.sizeDelta = new(backgroundTransform.sizeDelta.x, backgroundTransform.sizeDelta.y);
+                contentImage.color = new(160.0F / 255.0F, 240.0F / 255.0F, 64.0F / 255.0F, 1.0F);
+
+                this.healthBarHolder = new
+                (
+                    backgorundObject,
+                    backgroundTransform,
+                    backgroundImage,
+
+                    contentObject,
+                    contentTransform,
+                    contentImage
+                );
+            }
+        }
+
+        /// <summary>
         /// アイテムスロットを生成
         /// </summary>
         private void GeneratePlayerItemSlots()
@@ -63,8 +113,11 @@ namespace Player
             if (this.canvas == null)
                 return;
 
+            // アイテムスロットのクリア
+            this.DestroyPlayerItemSlots();
+
             // 親を生成
-            if (this.slotContents == null)
+            if (this.slotUIHolder == null)
             {
                 GameObject gameObject = new("Slots");
                 RectTransform rectTransform = gameObject.AddComponent<RectTransform>();
@@ -72,18 +125,15 @@ namespace Player
                 rectTransform.SetParent(this.canvas.transform);
                 rectTransform.anchoredPosition = Vector2.zero;
 
-                this.slotContents = new UIHolder
+                this.slotUIHolder = new UIHolder
                 (
                     gameObject,
                     rectTransform
                 );
             }
 
-            // アイテムスロットのクリア
-            this.DestroyPlayerItemSlots();
-
             // 新しいサイズのアイテムスロットを生成
-            this.slotHolders = new SlotHolder[Mathf.Max(0, this.displaySlotAmount)];
+            this.slotHolders = new SlotHolder[Mathf.Max(0, this.slotAmount)];
 
             // ループ最適化
             int length = slotHolders.Length;
@@ -124,7 +174,7 @@ namespace Player
                 nameTextMeshPro = nameObject.AddComponent<TextMeshProUGUI>();
 
                 // スロットの初期化
-                slotTransform.SetParent(this.slotContents.rectTransform);
+                slotTransform.SetParent(this.slotUIHolder.rectTransform);
                 slotTransform.anchoredPosition = Vector2.zero;
                 slotImage.sprite = this.slotSprite != null ? this.slotSprite : null;
                 slotImage.color = this.slotColor;
@@ -175,7 +225,43 @@ namespace Player
 
         public void Update()
         {
+            this.UpdatePlayerHealthBar();
             this.UpdatePlayerItemSlots();
+        }
+
+        /// <summary>
+        /// 体力バーの更新
+        /// </summary>
+        private void UpdatePlayerHealthBar()
+        {
+            if (this.playerBehaviour == null || !this.playerBehaviour.enabled)
+                return;
+
+            if (this.canvas == null || !this.canvas.enabled || this.canvasTransform == null)
+                return;
+
+            if (this.healthBarHolder == null || this.healthBarHolder.gameObject == null || this.healthBarHolder.rectTransform == null || this.healthBarHolder.contentHolder.rectTransform == null)
+                return;
+
+            if (!this.hasHealthBar || Camera.main == null || !Camera.main.enabled)
+                return;
+
+            // 体力バーを移動
+            RectTransform backgroundTransform = this.healthBarHolder.rectTransform;
+            RectTransform contentTransform = this.healthBarHolder.contentHolder.rectTransform;
+            Vector2 healthBarPos = Camera.main.WorldToScreenPoint(this.playerBehaviour.transform.position);
+
+            backgroundTransform.position = healthBarPos + (this.healthBarOffsets != null ? this.healthBarOffsets : Vector2.zero);
+
+            // プレイヤーの体力を適用
+            float contentLength = 0.0F;
+
+            if (this.playerBehaviour != null && this.playerBehaviour.enabled && this.playerBehaviour.Health > 0.0F)
+            {
+                contentLength = Mathf.Clamp(this.playerBehaviour.RemainingHealth / this.playerBehaviour.Health, 0.0F, 1.0F);
+            }
+
+            contentTransform.sizeDelta = new(backgroundTransform.sizeDelta.x * contentLength, backgroundTransform.sizeDelta.y);
         }
 
         /// <summary>
@@ -189,7 +275,7 @@ namespace Player
             if (this.canvas == null || !this.canvas.enabled || this.canvasTransform == null)
                 return;
 
-            if (this.slotHolders == null || this.slotHolders.Length <= 0)
+            if (this.slotUIHolder == null || this.slotUIHolder.gameObject == null || this.slotHolders == null || this.slotHolders.Length <= 0)
                 return;
 
             // ループ最適化
@@ -229,6 +315,8 @@ namespace Player
                         this.canvasTransform.sizeDelta.x / 2.0F - width * 2.0F,
                         (this.canvasTransform.sizeDelta.y / 2.0F - width * 2.0F) * cos
                     );
+
+                    slotHolder.rectTransform.anchoredPosition += this.slotOffsets != null ? this.slotOffsets : Vector2.zero;
 
                     slotHolder.rectTransform.sizeDelta = new(width * sin, width * sin);
                 }
@@ -276,7 +364,19 @@ namespace Player
 
         public void Destroy()
         {
+            this.DestroyPlayerHealthBar();
             this.DestroyPlayerItemSlots();
+        }
+
+        /// <summary>
+        /// 体力バーの破棄
+        /// </summary>
+        private void DestroyPlayerHealthBar()
+        {
+            if (this.healthBarHolder != null)
+            {
+                this.healthBarHolder.Destroy();
+            }
         }
 
         /// <summary>
@@ -284,6 +384,13 @@ namespace Player
         /// </summary>
         private void DestroyPlayerItemSlots()
         {
+            // 親スロットの破棄
+            if (this.slotUIHolder != null)
+            {
+                this.slotUIHolder.Destroy();
+            }
+
+            // 子スロットの破棄
             if (this.slotHolders == null || this.slotHolders.Length <= 0)
                 return;
 
@@ -295,12 +402,42 @@ namespace Player
             {
                 slotHolder = this.slotHolders[i];
 
-                if (slotHolder != null && slotHolder.gameObject != null)
+                if (slotHolder != null)
                 {
-                    UnityEngine.Object.Destroy(slotHolder.gameObject);
+                    slotHolder.Destroy();
                 }
 
                 this.slotHolders[i] = null;
+            }
+        }
+
+        private class HealthBarHolder : UIHolder
+        {
+            public readonly UIHolder contentHolder;
+
+            public HealthBarHolder
+            (
+                GameObject backgroundObject,
+                RectTransform backgroundTransform,
+                Image backgroundImage,
+
+                GameObject contentObject,
+                RectTransform contentTransform,
+                Image contentImage
+            ) : base(backgroundObject, backgroundTransform, backgroundImage)
+            {
+                this.contentHolder = new UIHolder
+                (
+                    contentObject,
+                    contentTransform,
+                    contentImage
+                );
+            }
+
+            public override void Destroy()
+            {
+                base.Destroy();
+                this.contentHolder.Destroy();
             }
         }
 
@@ -355,6 +492,14 @@ namespace Player
                     nameTextMeshPro
                 );
             }
+
+            public override void Destroy()
+            {
+                base.Destroy();
+                this.displayHolder.Destroy();
+                this.countHolder.Destroy();
+                this.nameHolder.Destroy();
+            }
         }
 
         /// <summary>
@@ -373,6 +518,14 @@ namespace Player
                 this.rectTransform = rectTransform;
                 this.image = image;
                 this.textMeshProUGUI = textMeshProUGUI;
+            }
+
+            public virtual void Destroy()
+            {
+                if (this.gameObject != null)
+                {
+                    UnityEngine.Object.Destroy(this.gameObject);
+                }
             }
         }
     }
