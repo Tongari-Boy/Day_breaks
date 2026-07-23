@@ -796,6 +796,15 @@ MonoBehaviour:
   spawnDataList:
   - spawnTime: 0
     spawnPosition: {x: -6, y: 0}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 0
+    spawnPosition: {x: 6, y: 3}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 5
+    spawnPosition: {x: 6, y: -4}
+    enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+  - spawnTime: 10
+    spawnPosition: {x: -6, y: 0}
     enemyPrefab: {fileID: 5591346575626076143, guid: fac771542d20f5f499dc339ca7b6137b, type: 3}
   enemyManager: {fileID: 1969045256}
 --- !u!4 &643085152

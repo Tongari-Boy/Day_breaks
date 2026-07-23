@@ -1,7 +1,9 @@
 using Castle;
 using Enemy;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 namespace Play
@@ -26,6 +28,8 @@ namespace Play
 
         [Header("ゲーム中フラグ")]
         [SerializeField] private bool gaming = false;
+
+        [SerializeField] private Image backgroundPanel;
 
         void Awake()
         {
@@ -58,6 +62,12 @@ namespace Play
                 // 残り15%から消え始める
                 float alpha = Mathf.InverseLerp(0f, 0.15f, rate);
                 castleManager.SetAlpha(alpha);
+
+                backgroundPanel.color = Color.Lerp(
+                    new Color32(0, 243, 255, 255),
+                    Color.black,
+                    alpha
+                );
             }
         }
 
