@@ -64,8 +64,8 @@ namespace Play
                 castleManager.SetAlpha(alpha);
 
                 backgroundPanel.color = Color.Lerp(
-                    new Color32(0, 243, 255, 255),
-                    Color.black,
+                    new Color32(0, 243, 255, 30),
+                    new Color32(0,0,0,30),
                     alpha
                 );
             }
