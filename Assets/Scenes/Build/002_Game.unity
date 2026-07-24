@@ -749,6 +749,7 @@ MonoBehaviour:
   decoyFortressManager: {fileID: 1012760026}
   gameTimer: {fileID: 2108089433}
   gaming: 0
+  backgroundPanel: {fileID: 583827185}
 --- !u!4 &642625257
 Transform:
   m_ObjectHideFlags: 0
@@ -795,14 +796,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemySpawner
   spawnDataList:
   - spawnTime: 0
-    spawnPosition: {x: -6, y: 0}
+    spawnPosition: {x: 8, y: 5}
     enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
   - spawnTime: 0
-    spawnPosition: {x: 6, y: 3}
-    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
-  - spawnTime: 5
-    spawnPosition: {x: 6, y: -4}
+    spawnPosition: {x: 9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 0
+    spawnPosition: {x: 7, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 0
+    spawnPosition: {x: 9, y: 4}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 10
+    spawnPosition: {x: -9, y: -5}
     enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+  - spawnTime: 10
+    spawnPosition: {x: -9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+  - spawnTime: 10
+    spawnPosition: {x: 9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 30
+    spawnPosition: {x: 9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 30
+    spawnPosition: {x: 9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+  - spawnTime: 30
+    spawnPosition: {x: -9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 40
+    spawnPosition: {x: 9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+  - spawnTime: 50
+    spawnPosition: {x: -9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+  - spawnTime: 50
+    spawnPosition: {x: 9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 60
+    spawnPosition: {x: -9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 60
+    spawnPosition: {x: -9, y: 4}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 60
+    spawnPosition: {x: -8, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 70
+    spawnPosition: {x: 0, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+  - spawnTime: 70
+    spawnPosition: {x: 0, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 0a1fde5c7cdb1f04b99e1cd016861d4b, type: 3}
+  - spawnTime: 80
+    spawnPosition: {x: -9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 90
+    spawnPosition: {x: 9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+  - spawnTime: 100
+    spawnPosition: {x: 9, y: 5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 9a691f2de83ea524c86752c1e4bd368d, type: 3}
+  - spawnTime: 110
+    spawnPosition: {x: -9, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: b9503152e2a0bea45a80c60eb10ee64a, type: 3}
+  - spawnTime: 120
+    spawnPosition: {x: -9, y: -4}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
+  - spawnTime: 120
+    spawnPosition: {x: -8, y: -5}
+    enemyPrefab: {fileID: 5591346575626076143, guid: 21c6ae40c45d70846a04a24443468e39, type: 3}
   - spawnTime: 10
     spawnPosition: {x: -6, y: 0}
     enemyPrefab: {fileID: 5591346575626076143, guid: fac771542d20f5f499dc339ca7b6137b, type: 3}
@@ -2082,6 +2146,10 @@ PrefabInstance:
     - target: {fileID: 5885067147709440883, guid: c6028eb40d3e0de45a3694aa944a79ce, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7139102943135616406, guid: c6028eb40d3e0de45a3694aa944a79ce, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7558201245390453812, guid: c6028eb40d3e0de45a3694aa944a79ce, type: 3}
       propertyPath: m_LocalScale.x

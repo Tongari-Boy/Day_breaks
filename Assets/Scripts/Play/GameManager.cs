@@ -29,7 +29,7 @@ namespace Play
         [Header("ゲーム中フラグ")]
         [SerializeField] private bool gaming = false;
 
-        [SerializeField] private Image backgroundPanel;
+        [SerializeField] private SpriteRenderer backgroundPanel;
 
         void Awake()
         {
@@ -64,8 +64,8 @@ namespace Play
                 castleManager.SetAlpha(alpha);
 
                 backgroundPanel.color = Color.Lerp(
-                    new Color32(0, 243, 255, 255),
-                    Color.black,
+                    new Color32(0, 243, 255, 30),
+                    new Color32(0,0,0,30),
                     alpha
                 );
             }
